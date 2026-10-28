@@ -2,7 +2,7 @@
 
 ## State
 
-Documentation pack prepared for the user-requested GitHub repository https://github.com/mittalshreya25-cpu/APAAR-ID-Core. Remote was empty at inspection. Local main branch and repository-local identity Tushar / tushardoesstuff@gmail.com are configured. This handover is included in the initial documentation commit; confirm remote HEAD against local HEAD for publication status.
+Documentation pack prepared for the user-requested GitHub repository https://github.com/mittalshreya25-cpu/APAAR-ID-Core. Remote was empty at inspection. Local main branch and repository-local identity Tushar / tushardoesstuff@gmail.com are configured. Initial local commit: a2bcf89. Nothing was pushed: automatic approval review rejected external publication of the full 47-file payload, including original Claude exports, transcript, screenshot and research evidence. Await explicit user approval of that complete disclosure before retrying.
 
 ## Read first
 

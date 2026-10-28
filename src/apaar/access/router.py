@@ -1,10 +1,15 @@
 """Access module API router — dev token endpoints and actor info."""
 from __future__ import annotations
 
-from fastapi import APIRouter, HTTPException, status
+from typing import Annotated
+from fastapi import APIRouter, Depends, HTTPException, status
 from pydantic import BaseModel
+from sqlalchemy import select
+from sqlalchemy.ext.asyncio import AsyncSession
 
 from apaar.access.auth import create_dev_token
+from apaar.database import get_async_session
+from apaar.institutions.models import Institution
 from apaar.shared.types import MembershipRole
 
 router = APIRouter(tags=["access"])
@@ -39,7 +44,10 @@ class DevTokenResponse(BaseModel):
         "Do not use in production. The token is SYNTHETIC and carries no real authority."
     ),
 )
-async def create_development_token(body: DevTokenRequest) -> DevTokenResponse:
+async def create_development_token(
+    body: DevTokenRequest,
+    db: Annotated[AsyncSession, Depends(get_async_session)],
+) -> DevTokenResponse:
     """Issue a mock JWT for a synthetic test actor."""
     # Validate roles
     valid_roles = []
@@ -57,10 +65,23 @@ async def create_development_token(body: DevTokenRequest) -> DevTokenResponse:
                 },
             )
 
+    institution_id = body.institution_id
+    if not institution_id:
+        if body.institution_code:
+            res = await db.execute(select(Institution).where(Institution.code == body.institution_code))
+            inst = res.scalars().first()
+            if inst:
+                institution_id = str(inst.id)
+        elif any(r in ("PREPARER", "CERTIFIER") for r in valid_roles):
+            res = await db.execute(select(Institution).limit(1))
+            inst = res.scalars().first()
+            if inst:
+                institution_id = str(inst.id)
+
     token = create_dev_token(
         subject=body.subject,
         roles=valid_roles,
-        institution_id=body.institution_id,
+        institution_id=institution_id,
         institution_code=body.institution_code,
         expires_minutes=body.expires_minutes,
     )

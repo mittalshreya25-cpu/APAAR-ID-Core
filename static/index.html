@@ -1,9 +1,9 @@
-﻿<!DOCTYPE html>
+<!DOCTYPE html>
 <html lang="en">
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>APAAR ID Core ΓÇö Institutional Enrolment Assurance Platform</title>
+  <title>APAAR ID Core &mdash; Institutional Enrolment Assurance Platform</title>
   <!-- Tailwind CSS & Lucide Icons -->
   <script src="https://cdn.tailwindcss.com"></script>
   <script src="https://unpkg.com/lucide@latest"></script>
@@ -20,7 +20,7 @@
   <!-- Synthetic Banner -->
   <aside aria-label="Prototype environment notice" class="bg-amber-500 text-slate-900 text-xs font-semibold px-4 py-1.5 text-center flex items-center justify-center gap-2 shadow-inner">
     <i data-lucide="shield-alert" class="w-4 h-4"></i>
-    <span>SYNTHETIC DEMONSTRATION PROTOTYPE ΓÇö All APAAR IDs and student records are fictional. No live government registry is connected.</span>
+    <span>SYNTHETIC DEMONSTRATION PROTOTYPE &mdash; All APAAR IDs and student records are fictional. No live government registry is connected.</span>
   </aside>
 
   <!-- Top Navigation -->
@@ -325,7 +325,7 @@
 
           <!-- Synthetic Provenance Disclaimer Footer -->
           <div class="bg-slate-100 border-t border-slate-200 px-6 py-3 text-center text-[11px] text-slate-500">
-            Prov: SYNTHETIC_MOCK_PROVENANCE ΓÇö Generated for AICTE PS-26263 Demonstration. Not an official national credential.
+            Prov: SYNTHETIC_MOCK_PROVENANCE &mdash; Generated for AICTE PS-26263 Demonstration. Not an official national credential.
           </div>
         </div>
       </div>
@@ -416,8 +416,8 @@
   </div>
 
   <footer class="bg-slate-900 text-slate-400 text-xs py-6 border-t border-slate-800 text-center">
-    <p>APAAR ID Core ΓÇö AICTE Problem Statement 26263 Demonstration Blueprint</p>
-    <p class="text-slate-500 mt-1">Python 3.12 ΓÇó FastAPI ΓÇó PostgreSQL / SQLite Architecture ΓÇó Synthetic / Mock Verification Only</p>
+    <p>APAAR ID Core &mdash; AICTE Problem Statement 26263 Demonstration Blueprint</p>
+    <p class="text-slate-500 mt-1">Python 3.12 &bull; FastAPI &bull; PostgreSQL / SQLite Architecture &bull; Synthetic / Mock Verification Only</p>
   </footer>
 
   <!-- App Script -->
@@ -447,8 +447,8 @@
 
     async function init() {
       safeCreateIcons();
-      await loadOfferings();
       await switchRole("preparer");
+      await loadOfferings();
       await refreshDashboard();
     }
 
@@ -475,6 +475,7 @@
         if (subjEl) subjEl.innerText = roleConfig.subject;
         const selEl = document.getElementById("roleSelector");
         if (selEl) selEl.value = roleKey;
+        await refreshDashboard();
       } catch (err) {
         console.error("Auth error:", err);
       }
@@ -498,6 +499,8 @@
 
       if (tabName === 'dashboard') {
         refreshDashboard();
+      } else if (tabName === 'ingestion') {
+        loadOfferings();
       } else if (tabName === 'audit') {
         refreshAudit();
       }
@@ -515,6 +518,7 @@
           const selectEl = document.getElementById("uploadOfferingSelect");
           if (selectEl) {
             selectEl.innerHTML = offerings.map(o => `<option value="${o.id}">${o.course_name} (${o.level})</option>`).join("");
+            selectEl.value = selectedOfferingId;
             selectEl.onchange = (e) => { selectedOfferingId = e.target.value; };
           }
         }
@@ -572,6 +576,19 @@
       btn.innerText = "Staging batch...";
       btn.disabled = true;
       try {
+        const selEl = document.getElementById("uploadOfferingSelect");
+        let offeringId = (selEl && selEl.value) ? selEl.value : selectedOfferingId;
+        if (!offeringId) {
+          await loadOfferings();
+          offeringId = (selEl && selEl.value) ? selEl.value : selectedOfferingId;
+        }
+        if (!offeringId) {
+          alert("No programme offering available. Please wait for offerings to load.");
+          btn.innerText = "Upload & Stage Submission";
+          btn.disabled = false;
+          return;
+        }
+
         const csvContent = (
           "local_student_id,apaar_id,entry_route,category,is_nri,is_oci,is_fn,admission_cohort,current_study_year,interval_start\n" +
           "DEMO-2024-0001,123456789012,DIRECT,GENERAL,false,false,false,2024-25,1,2024-08-01\n" +
@@ -595,7 +612,8 @@
         });
         if (!res.ok) {
           const err = await res.json();
-          alert(`Upload failed: ${err.detail?.message || res.statusText}`);
+          const msg = typeof err.detail === "string" ? err.detail : (err.detail?.message || (Array.isArray(err.detail) ? err.detail.map(e => e.msg).join(", ") : JSON.stringify(err.detail)) || res.statusText);
+          alert(`Upload failed: ${msg}`);
           btn.innerText = "Upload & Stage Submission";
           btn.disabled = false;
           return;

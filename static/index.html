@@ -596,8 +596,6 @@
         );
         const blob = new Blob([csvContent], { type: "text/csv" });
         const formData = new FormData();
-        const selEl = document.getElementById("uploadOfferingSelect");
-        const offeringId = (selEl && selEl.value) ? selEl.value : selectedOfferingId;
         const cohortEl = document.getElementById("cohortInput");
         const cohort = (cohortEl && cohortEl.value) ? cohortEl.value.trim() : "2024-25";
 

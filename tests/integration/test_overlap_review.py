@@ -1,3 +1,4 @@
+from typing import Any
 """P5.1 and P5.2 Cross-Institution Temporal Overlap and Accountable Review Tests.
 
 Tests:
@@ -16,13 +17,13 @@ from apaar.main import create_app
 
 
 @pytest.fixture(scope="module")
-def client():
+def client() -> Any:
     app = create_app()
     with TestClient(app) as test_client:
         yield test_client
 
 
-def test_cross_institution_overlap_detection_and_review_lifecycle(client):
+def test_cross_institution_overlap_detection_and_review_lifecycle(client) -> None:
     # -------------------------------------------------------------------------
     # 1. SETUP: Get tokens for Institution 1 (Maker & Checker)
     # -------------------------------------------------------------------------

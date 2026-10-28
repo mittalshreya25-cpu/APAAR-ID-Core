@@ -5,7 +5,7 @@ from apaar.shared.errors import UploadError
 from apaar.submissions.parser import SubmissionParser
 
 
-def test_parse_valid_csv():
+def test_parse_valid_csv() -> None:
     csv_data = (
         "local_student_id,apaar_id,entry_route,category,is_nri,is_oci,is_fn,admission_cohort,current_study_year,interval_start\n"
         "00123,012345678901,DIRECT,GENERAL,false,false,false,2024-25,1,2024-08-01\n"
@@ -23,7 +23,7 @@ def test_parse_valid_csv():
     assert res.rows[0].normalized_data["apaar_id"] == "012345678901"
 
 
-def test_parse_missing_required_columns():
+def test_parse_missing_required_columns() -> None:
     csv_data = "local_student_id,entry_route\n123,DIRECT\n".encode("utf-8")
     parser = SubmissionParser()
     with pytest.raises(UploadError) as exc_info:
@@ -31,7 +31,7 @@ def test_parse_missing_required_columns():
     assert "missing required columns" in exc_info.value.message.lower()
 
 
-def test_parse_json_submission():
+def test_parse_json_submission() -> None:
     json_data = (
         '['
         '  {"local_student_id": "STU-01", "apaar_id": "112233445566", "entry_route": "DIRECT", '

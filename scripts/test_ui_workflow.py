@@ -7,10 +7,10 @@ import urllib.error
 import uvicorn
 from apaar.main import app
 
-def start_server():
+def start_server() -> None:
     uvicorn.run(app, host="127.0.0.1", port=8766, log_level="error")
 
-def run_workflow_test():
+def run_workflow_test() -> None:
     server_thread = threading.Thread(target=start_server, daemon=True)
     server_thread.start()
     time.sleep(2.0)

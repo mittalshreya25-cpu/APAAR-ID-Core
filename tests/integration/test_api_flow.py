@@ -1,3 +1,4 @@
+from typing import Any
 """Integration tests verifying end-to-end flow of the APAAR Core platform using TestClient."""
 import io
 import pytest
@@ -7,13 +8,13 @@ from apaar.main import create_app
 
 
 @pytest.fixture(scope="module")
-def client():
+def client() -> Any:
     app = create_app()
     with TestClient(app) as test_client:
         yield test_client
 
 
-def test_health_and_readiness(client):
+def test_health_and_readiness(client) -> None:
     resp = client.get("/health")
     assert resp.status_code == 200
     assert resp.json()["status"] == "ok"
@@ -24,7 +25,7 @@ def test_health_and_readiness(client):
     assert ready_resp.json()["status"] == "ready"
 
 
-def test_end_to_end_demonstration_flow(client):
+def test_end_to_end_demonstration_flow(client) -> None:
     """Complete 10-requirement demonstration flow:
 
     1. Get dev token for Preparer actor

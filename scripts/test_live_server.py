@@ -7,10 +7,10 @@ import urllib.error
 import uvicorn
 from apaar.main import app
 
-def start_server():
+def start_server() -> None:
     uvicorn.run(app, host="127.0.0.1", port=8765, log_level="warning")
 
-def run_tests():
+def run_tests() -> None:
     # Start uvicorn in background thread
     server_thread = threading.Thread(target=start_server, daemon=True)
     server_thread.start()

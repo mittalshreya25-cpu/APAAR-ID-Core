@@ -9,7 +9,7 @@ sys.path.insert(0, str(Path(__file__).resolve().parent.parent))
 from fastapi.testclient import TestClient
 from apaar.main import create_app
 
-def run_demo():
+def run_demo() -> None:
     print("Initializing FastAPI application...", flush=True)
     app = create_app()
     client = TestClient(app)

@@ -1,3 +1,4 @@
+from typing import Any
 """P4.4 Concurrency and Race Condition Tests.
 
 Tests:
@@ -14,13 +15,13 @@ from apaar.main import create_app
 
 
 @pytest.fixture(scope="module")
-def client():
+def client() -> Any:
     app = create_app()
     with TestClient(app) as test_client:
         yield test_client
 
 
-def test_concurrency_and_maker_checker_certification(client):
+def test_concurrency_and_maker_checker_certification(client) -> None:
     """Test maker/checker denial and atomic race safety on certification."""
     # 1. Dev token for Preparer (Maker) to discover offering & institution_id
     tok_init = client.post(

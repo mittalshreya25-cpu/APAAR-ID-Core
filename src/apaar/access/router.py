@@ -1,7 +1,7 @@
 """Access module API router — dev token endpoints and actor info."""
 from __future__ import annotations
 
-from typing import Annotated
+from typing import Annotated, Any
 from fastapi import APIRouter, Depends, HTTPException, status
 from pydantic import BaseModel
 from sqlalchemy import select
@@ -99,7 +99,7 @@ async def create_development_token(
     summary="List synthetic test actors",
     description="Returns the set of pre-defined synthetic OIDC test actors.",
 )
-async def list_synthetic_actors() -> dict:
+async def list_synthetic_actors() -> dict[str, Any]:
     """List synthetic test actors available in dev mode."""
     from fixtures.synthetic_data import SYNTHETIC_ACTORS
 

@@ -19,7 +19,7 @@ from apaar.validation.rules import (
 )
 
 
-def test_apaar_shape_validation():
+def test_apaar_shape_validation() -> None:
     """VR-001: 12-digit numeric validation (shape check only)."""
     assert validate_apaar_shape("123456789012") is True
     assert validate_apaar_shape("000000000000") is True
@@ -36,14 +36,14 @@ def test_apaar_shape_validation():
     assert f_fail.is_blocking is True
 
 
-def test_local_student_id_present():
+def test_local_student_id_present() -> None:
     """VR-002: Local student ID presence."""
     assert rule_local_student_id_present(1, "STU-001").outcome == FindingOutcome.PASS
     assert rule_local_student_id_present(2, "").outcome == FindingOutcome.FAIL
     assert rule_local_student_id_present(3, "   ").outcome == FindingOutcome.FAIL
 
 
-def test_duplicate_checks():
+def test_duplicate_checks() -> None:
     """VR-003 & VR-004: Duplicate detection within a submission."""
     seen_ids = {"STU-001"}
     assert rule_within_file_duplicate_local_id(1, "STU-001", seen_ids).outcome == FindingOutcome.FAIL
@@ -54,7 +54,7 @@ def test_duplicate_checks():
     assert rule_within_file_duplicate_apaar(2, "987654321098", seen_apaars).outcome == FindingOutcome.PASS
 
 
-def test_entry_route_and_category():
+def test_entry_route_and_category() -> None:
     """VR-005 & VR-006: Recognized routes and categories."""
     assert rule_entry_route_valid(1, "DIRECT").outcome == FindingOutcome.PASS
     assert rule_entry_route_valid(2, "LATERAL").outcome == FindingOutcome.PASS
@@ -65,7 +65,7 @@ def test_entry_route_and_category():
     assert rule_category_valid(3, "UNKNOWN_CAT").outcome == FindingOutcome.FAIL
 
 
-def test_dates_and_intervals():
+def test_dates_and_intervals() -> None:
     """VR-007, VR-008, VR-014: Date format and order validation."""
     assert rule_date_format(1, "interval_start", "2024-08-01").outcome == FindingOutcome.PASS
     assert rule_date_format(2, "interval_start", "not-a-date").outcome == FindingOutcome.FAIL
@@ -75,7 +75,7 @@ def test_dates_and_intervals():
     assert rule_interval_order(2, "2025-08-01", "2024-05-31").outcome == FindingOutcome.FAIL
 
 
-def test_provider_outcomes():
+def test_provider_outcomes() -> None:
     """VR-009: Action matrix for mock provider outcomes."""
     f_match = rule_provider_outcome(1, ProviderOutcome.MOCK_MATCH.value)
     assert f_match.outcome == FindingOutcome.PASS
@@ -90,7 +90,7 @@ def test_provider_outcomes():
     assert f_unavail.is_blocking is True
 
 
-def test_capacity_checks_boundary():
+def test_capacity_checks_boundary() -> None:
     """VR-010 to VR-012: Capacity pool evaluation at cap - 1, exact, and cap + 1."""
     # Under capacity (59 / 60)
     findings_under = rule_capacity_check(59, 60, 4, 6, 0, 0, "DEMO_ONLY")

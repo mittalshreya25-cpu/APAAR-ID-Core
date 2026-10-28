@@ -45,3 +45,4 @@ def test_parse_json_submission():
     assert res.received_rows == 1
     assert res.processed_rows == 1
     assert res.rows[0].normalized_data["local_student_id"] == "STU-01"
+

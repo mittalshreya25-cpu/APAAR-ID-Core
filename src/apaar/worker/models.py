@@ -83,3 +83,4 @@ class Job(Base):
 
     def __repr__(self) -> str:
         return f"<Job id={self.id} type={self.job_type} status={self.status}>"
+

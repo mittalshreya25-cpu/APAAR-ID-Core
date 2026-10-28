@@ -241,3 +241,4 @@ def _submission_to_out(sub: Submission) -> SubmissionOut:
         created_by=sub.created_by,
         version=sub.version,
     )
+

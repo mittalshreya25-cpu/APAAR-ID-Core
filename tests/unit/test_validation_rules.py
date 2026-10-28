@@ -104,3 +104,4 @@ def test_capacity_checks_boundary():
     findings_excess = rule_capacity_check(61, 60, 4, 6, 0, 0, "DEMO_ONLY")
     ord_finding = next(f for f in findings_excess if f.rule_id == "VR-010")
     assert ord_finding.outcome == FindingOutcome.REVIEW_REQUIRED
+

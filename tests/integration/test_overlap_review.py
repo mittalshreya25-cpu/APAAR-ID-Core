@@ -165,3 +165,4 @@ def test_cross_institution_overlap_detection_and_review_lifecycle(client):
     # Verify case transitioned back to OPEN
     reopened_cases = client.get(f"/api/v1/review/cases?case_status=OPEN", headers=reg_headers).json()
     assert any(c["id"] == case_id for c in reopened_cases)
+

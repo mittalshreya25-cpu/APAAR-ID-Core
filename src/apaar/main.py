@@ -37,6 +37,18 @@ from apaar.shared.errors import (
     ValidationError,
 )
 
+# Import all models to ensure full declarative metadata resolution
+import apaar.institutions.models  # noqa: F401
+import apaar.approvals.models  # noqa: F401
+import apaar.identity.models  # noqa: F401
+import apaar.submissions.models  # noqa: F401
+import apaar.validation.models  # noqa: F401
+import apaar.review.models  # noqa: F401
+import apaar.attestations.models  # noqa: F401
+import apaar.reporting.models  # noqa: F401
+import apaar.audit.models  # noqa: F401
+import apaar.worker.models  # noqa: F401
+
 logger = logging.getLogger(__name__)
 
 

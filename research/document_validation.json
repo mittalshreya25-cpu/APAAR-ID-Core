@@ -1,0 +1,102 @@
+{
+  "checked_at": "2026-10-28T15:40:33.510887+00:00",
+  "scope": "Document structure, local links, provenance and evidence referential integrity; not product testing or proof of claim entailment.",
+  "checks": {
+    "report_structure": {
+      "exit_code": 0,
+      "log": "report_structure.txt"
+    },
+    "local_links": {
+      "broken": [],
+      "files": [
+        "PROJECT_SPEC.md",
+        "AGENTS.md",
+        "CONTEXT.md",
+        "PHASES_AND_TASKS.md",
+        "HANDOVER.md"
+      ]
+    },
+    "handover_line_count": 47,
+    "original_hashes": {
+      "Claude_Project-research-review-and-refinement_20261028-1942.md": true,
+      "Claude_Project-research-review-and-refinement_20261028-1943.pdf": true
+    },
+    "evidence_integrity": {
+      "source_rows": 32,
+      "canonical_source_count": 31,
+      "evidence_rows": 34,
+      "claim_events": 49,
+      "missing_sources": [],
+      "missing_evidence_ids": [],
+      "bibliography_without_evidence": []
+    },
+    "bibliography": {
+      "entries": 30,
+      "used": 30,
+      "uncited": [],
+      "undeclared": []
+    },
+    "council_artifacts": {
+      "partner": true,
+      "first_principles": true,
+      "film_room": true,
+      "empiricist": true,
+      "insider": true
+    },
+    "requirements": {
+      "R1": true,
+      "R2": true,
+      "R3": true,
+      "R4": true,
+      "R5": true,
+      "R6": true,
+      "R7": true,
+      "R8": true,
+      "R9": true,
+      "R10": true
+    },
+    "master_words": 9740,
+    "builder_check": {
+      "artifact": "builder_check.md",
+      "final_resolution_present": true
+    },
+    "citation_checker": {
+      "exit_code": 0,
+      "mode": "non-strict",
+      "url_verified": 0,
+      "entries": 30,
+      "limitation": "Shell DNS unavailable; not a successful URL verification. Connected-web nonauthor original-source reviews recorded separately.",
+      "log": "citation_verification.txt"
+    },
+    "claim_review": {
+      "distinct_claims": 35,
+      "supported": 30,
+      "partial": 5,
+      "all_have_nonauthor_reviewer": true
+    },
+    "delivered_files": {
+      "PROJECT_SPEC.md": {
+        "sha256": "a43bb73b24bd0a923ca6388fe640676dba1267049d32c5fc7916e02c948211a5",
+        "lines": 436
+      },
+      "AGENTS.md": {
+        "sha256": "d97110542b4467b04636d1e42d84c5c3cb2c2c611e27fca4ebb51b928d364894",
+        "lines": 61
+      },
+      "CONTEXT.md": {
+        "sha256": "d0514b7ecbfaa9e8607f5f067ad3d645dad14e4e8e455783a37535c43de65952",
+        "lines": 74
+      },
+      "PHASES_AND_TASKS.md": {
+        "sha256": "4e595bb4e1598c85df8de5f66e855776760c8403978be5e713d0fa120fe87a1c",
+        "lines": 134
+      },
+      "HANDOVER.md": {
+        "sha256": "f9589a14c9c754c0fa858be58af7577f25ddce94f2efdec2fe68121a8e601ccb",
+        "lines": 47
+      }
+    }
+  },
+  "errors": [],
+  "passed": true
+}

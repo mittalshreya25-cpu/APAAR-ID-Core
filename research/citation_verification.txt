@@ -1,0 +1,50 @@
+
+============================================================
+CITATION VERIFICATION: PROJECT_SPEC.md
+============================================================
+
+Found 30 citations
+
+
+============================================================
+VERIFICATION SUMMARY
+============================================================
+
+DOI Verified: 0/30
+URL Verified: 0/30
+Suspicious: 0/30
+Unverified: 30/30
+
+UNVERIFIED CITATIONS (Could not check):
+  [1] URL check failed: URL error: [Errno 11001] getaddrinfo failed
+  [2] URL check failed: URL error: [Errno 11001] getaddrinfo failed
+  [3] URL check failed: URL error: [Errno 11001] getaddrinfo failed
+  [4] URL check failed: URL error: [Errno 11001] getaddrinfo failed
+  [5] URL check failed: URL error: [Errno 11001] getaddrinfo failed
+  [6] URL check failed: URL error: [Errno 11001] getaddrinfo failed
+  [7] URL check failed: URL error: [Errno 11001] getaddrinfo failed
+  [8] URL check failed: URL error: [Errno 11001] getaddrinfo failed
+  [9] URL check failed: URL error: [Errno 11001] getaddrinfo failed
+  [10] URL check failed: URL error: [Errno 11001] getaddrinfo failed
+  [11] URL check failed: URL error: [Errno 11001] getaddrinfo failed
+  [12] URL check failed: URL error: [Errno 11001] getaddrinfo failed
+  [13] URL check failed: URL error: [Errno 11001] getaddrinfo failed
+  [14] URL check failed: URL error: [Errno 11001] getaddrinfo failed
+  [15] URL check failed: URL error: [Errno 11001] getaddrinfo failed
+  [16] URL check failed: URL error: [Errno 11001] getaddrinfo failed
+  [17] URL check failed: URL error: [Errno 11001] getaddrinfo failed
+  [18] URL check failed: URL error: [Errno 11001] getaddrinfo failed
+  [19] URL check failed: URL error: [Errno 11001] getaddrinfo failed
+  [20] URL check failed: URL error: [Errno 11001] getaddrinfo failed
+  [21] URL check failed: URL error: [Errno 11001] getaddrinfo failed
+  [22] URL check failed: URL error: [Errno 11001] getaddrinfo failed
+  [23] URL check failed: URL error: [Errno 11001] getaddrinfo failed
+  [24] URL check failed: URL error: [Errno 11001] getaddrinfo failed
+  [25] URL check failed: URL error: [Errno 11001] getaddrinfo failed
+  [26] URL check failed: URL error: [Errno 11001] getaddrinfo failed
+  [27] URL check failed: URL error: [Errno 11001] getaddrinfo failed
+  [28] URL check failed: URL error: [Errno 11001] getaddrinfo failed
+  [29] URL check failed: URL error: [Errno 11001] getaddrinfo failed
+  [30] URL check failed: URL error: [Errno 11001] getaddrinfo failed
+
+WARNING: Less than 50% citations verified

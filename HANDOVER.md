@@ -2,23 +2,22 @@
 
 ## State
 
-Phases P1 through P6 of the APAAR-Core platform are implemented and verified. All 16 automated tests in the test suite pass cleanly (unit tests and integration flows). Live HTTP server sockets and the interactive UI dashboard have been verified end-to-end.
+Phases P1 through P6 of the APAAR-Core platform are fully implemented and verified. All 16 automated tests in the test suite pass cleanly (16/16 PASSED). Live HTTP server sockets and the complete interactive UI demo workflow have been verified end-to-end against live Uvicorn on port 8000.
 
-## What was built and verified
+## What was fixed and verified
 
-1. **Core Models & Database**: 21 SQLAlchemy 2.0 ORM models in `src/apaar/`; seeded `apaar_dev.db` with synthetic institutions, offerings, demo approvals, and active rule bundle.
-2. **Deterministic Mock Provider**: `MockApaarProvider` simulating match, not-found, mismatch, and unavailable scenarios with explicit `synthetic=True` provenance.
-3. **Bounded Ingestion**: CSV/JSON parser with leading-zero preservation and schema validation.
-4. **Validation Rules (VR-001–VR-014)**: Rule bundle, per-row checks, date bounds, duplicate detection, and capacity pool reconciliation.
-5. **Maker/Checker Certification**: Preparers cannot certify their own submissions (`403 SELF_APPROVAL_DENIED`). Racing certifiers on the same scope lock are rejected with `409 Conflict (CERTIFICATION_BLOCKED)`.
-6. **Cross-Institution Overlap Review**: Central temporal overlap matching across institutions with counterparty PII suppression and accountable review decision lifecycle (`OPEN` -> `RESOLVED` / `DISMISSED` -> `REOPENED`).
-7. **Cryptographic Attestations & Certificates**: JWS compact token issuance and 5-criterion verification; academic certificate records displaying both synthetic APAAR ID and local student ID.
-8. **Interactive UI Dashboard**: Served at `GET /` (`static/index.html`) with role switcher, live capacity meters, staging studio, certificate viewer, and JWS verifier.
+1. **Offerings Dropdown Population**: Reordered `init()` in `static/index.html` so `switchRole("preparer")` obtains the authenticated Bearer token before `loadOfferings()` queries `/api/v1/approvals/offerings`.
+2. **Dev Token Institution Resolution**: Updated `/api/v1/access/dev-token` in `src/apaar/access/router.py` to automatically resolve `institution_code` to the internal `institution_id` in the database when omitted in the request.
+3. **Tab & Role Synchronization**: Added active refresh hooks to `setTab('ingestion')` and `switchRole()` to guarantee offerings and dashboard capacity metrics remain in sync.
+4. **Batch Staging & Error Handling**: Guarded `submitBatch()` to prevent sending null/empty offering IDs, resolving the `422 Unprocessable Entity` alert.
+5. **Character Encoding**: Cleaned up corrupted em-dash and bullet artifacts in `static/index.html`.
+6. **Live End-to-End Workflow Test**: Added `scripts/test_ui_workflow.py` validating all 12 browser actions sequentially over real HTTP sockets with 100% success.
 
 ## Verification evidence
 
-- `pytest tests/`: 16/16 PASSED in 2.3s.
-- `scripts/test_live_server.py`: All 12 live HTTP socket operations passed against uvicorn.
+- `pytest tests/`: 16/16 PASSED in 1.87s.
+- `scripts/test_ui_workflow.py`: All 12 browser UI steps passed against live Uvicorn on real HTTP sockets.
+- `scripts/test_live_server.py`: All 12 API operations verified over HTTP.
 - Concurrency test: `tests/integration/test_concurrency_certification.py` passed.
 - Overlap review test: `tests/integration/test_overlap_review.py` passed.
 
@@ -28,8 +27,8 @@ Phases P1 through P6 of the APAAR-Core platform are implemented and verified. Al
 # 1. Run automated test suite
 .venv\Scripts\python.exe -m pytest tests/
 
-# 2. Run the live server
-.venv\Scripts\python.exe -m uvicorn apaar.main:app --host 127.0.0.1 --port 8000
+# 2. Run the live server with hot reload
+.venv\Scripts\python.exe -m uvicorn apaar.main:app --host 127.0.0.1 --port 8000 --reload
 
 # 3. Access interactive UI dashboard in your browser
 http://127.0.0.1:8000/
@@ -37,5 +36,5 @@ http://127.0.0.1:8000/
 
 ## Next steps
 
-- Execute P7/P8 deployment hardening and mentor demonstration scripts.
-- Synchronize git commits to remote repository origin/main.
+- Proceed to mentor demonstration and presentation materials.
+- All code committed and pushed to `origin/main` (`5bbebda`).

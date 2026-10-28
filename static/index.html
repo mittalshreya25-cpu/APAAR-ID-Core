@@ -1,734 +1,455 @@
-<!DOCTYPE html>
+﻿<!DOCTYPE html>
 <html lang="en">
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>APAAR ID Core — Institutional Enrolment Assurance Platform</title>
+  <title>APAAR ID Core ΓÇö Institutional Enrolment Assurance Platform</title>
+  <!-- Tailwind CSS & Lucide Icons -->
+  <script src="https://cdn.tailwindcss.com"></script>
+  <script src="https://unpkg.com/lucide@latest"></script>
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&family=JetBrains+Mono:wght@400;500;600&display=swap" rel="stylesheet">
   <style>
-    :root {
-      --bg-main: #0b0f19;
-      --bg-card: #111827;
-      --bg-card-hover: #1f2937;
-      --border: #1f2937;
-      --border-light: #374151;
-      --text-main: #f9fafb;
-      --text-muted: #9ca3af;
-      --primary: #6366f1;
-      --primary-hover: #4f46e5;
-      --success: #10b981;
-      --warning: #f59e0b;
-      --danger: #ef4444;
-      --font-sans: 'Plus Jakarta Sans', system-ui, sans-serif;
-      --font-mono: 'JetBrains Mono', monospace;
-    }
-    * { box-sizing: border-box; margin: 0; padding: 0; }
-    body {
-      background-color: var(--bg-main);
-      color: var(--text-main);
-      font-family: var(--font-sans);
-      min-height: 100vh;
-      display: flex;
-      flex-direction: column;
-      line-height: 1.5;
-    }
-    code, pre, .font-mono { font-family: var(--font-mono); }
-
-    /* Layout */
-    .container { max-width: 1280px; margin: 0 auto; padding: 0 1.5rem; width: 100%; }
-    header { background: #0f172a; border-bottom: 1px solid #1e293b; position: sticky; top: 0; z-index: 50; }
-    .header-inner { display: flex; align-items: center; justify-content: space-between; height: 4rem; }
-
-    /* Synthetic Banner */
-    .banner {
-      background: linear-gradient(90deg, #d97706, #b45309);
-      color: #fff;
-      font-size: 0.75rem;
-      font-weight: 700;
-      text-align: center;
-      padding: 0.4rem 1rem;
-      letter-spacing: 0.025em;
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      gap: 0.5rem;
-    }
-
-    /* Badges & Pills */
-    .badge {
-      display: inline-flex;
-      align-items: center;
-      gap: 0.35rem;
-      padding: 0.2rem 0.6rem;
-      border-radius: 9999px;
-      font-size: 0.7rem;
-      font-weight: 600;
-    }
-    .badge-primary { background: rgba(99, 102, 241, 0.15); color: #818cf8; border: 1px solid rgba(99, 102, 241, 0.3); }
-    .badge-success { background: rgba(16, 185, 129, 0.15); color: #34d399; border: 1px solid rgba(16, 185, 129, 0.3); }
-    .badge-warning { background: rgba(245, 158, 11, 0.15); color: #fbbf24; border: 1px solid rgba(245, 158, 11, 0.3); }
-    .badge-danger { background: rgba(239, 68, 68, 0.15); color: #f87171; border: 1px solid rgba(239, 68, 68, 0.3); }
-
-    /* Interactive Guided Steps Bar */
-    .guide-bar {
-      background: #0f172a;
-      border: 1px solid #1e293b;
-      border-radius: 1rem;
-      padding: 1rem 1.25rem;
-      margin: 1.5rem 0;
-      display: flex;
-      align-items: center;
-      justify-content: space-between;
-      gap: 1rem;
-      flex-wrap: wrap;
-    }
-    .guide-steps { display: flex; align-items: center; gap: 0.75rem; flex-wrap: wrap; }
-    .guide-btn {
-      background: #1e293b;
-      border: 1px solid #334155;
-      color: #e2e8f0;
-      padding: 0.45rem 0.9rem;
-      border-radius: 0.5rem;
-      font-size: 0.75rem;
-      font-weight: 600;
-      cursor: pointer;
-      display: flex;
-      align-items: center;
-      gap: 0.4rem;
-      transition: all 0.2s ease;
-    }
-    .guide-btn:hover { background: #334155; color: #fff; border-color: #6366f1; }
-    .guide-btn.active { background: #6366f1; border-color: #6366f1; color: #fff; }
-
-    /* Tabs */
-    .tab-bar {
-      display: flex;
-      gap: 0.5rem;
-      border-bottom: 1px solid #1e293b;
-      margin-bottom: 1.5rem;
-      overflow-x: auto;
-      padding-bottom: 0.5rem;
-    }
-    .tab-item {
-      background: transparent;
-      border: 1px solid transparent;
-      color: var(--text-muted);
-      padding: 0.6rem 1rem;
-      border-radius: 0.6rem;
-      font-size: 0.85rem;
-      font-weight: 600;
-      cursor: pointer;
-      display: flex;
-      align-items: center;
-      gap: 0.5rem;
-      transition: all 0.2s ease;
-      white-space: nowrap;
-    }
-    .tab-item:hover { background: #1e293b; color: #f3f4f6; }
-    .tab-item.active {
-      background: #6366f1;
-      color: #fff;
-      box-shadow: 0 4px 12px rgba(99, 102, 241, 0.25);
-    }
-
-    /* Cards */
-    .card {
-      background: var(--bg-card);
-      border: 1px solid var(--border);
-      border-radius: 1rem;
-      padding: 1.5rem;
-      box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1);
-    }
-    .grid-2 { display: grid; grid-template-columns: repeat(auto-fit, minmax(320px, 1fr)); gap: 1.5rem; }
-    .grid-4 { display: grid; grid-template-columns: repeat(auto-fit, minmax(220px, 1fr)); gap: 1.25rem; }
-
-    /* Metric Cards */
-    .metric-card {
-      background: var(--bg-card);
-      border: 1px solid var(--border);
-      border-radius: 1rem;
-      padding: 1.25rem;
-      display: flex;
-      align-items: center;
-      gap: 1rem;
-    }
-    .metric-icon {
-      width: 3rem;
-      height: 3rem;
-      border-radius: 0.75rem;
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      font-size: 1.25rem;
-    }
-
-    /* Tables */
-    .table-container { overflow-x: auto; border-radius: 0.75rem; border: 1px solid #1e293b; }
-    table { width: 100%; border-collapse: collapse; text-align: left; font-size: 0.825rem; }
-    th { background: #0f172a; color: #94a3b8; font-weight: 600; text-transform: uppercase; font-size: 0.7rem; letter-spacing: 0.05em; padding: 0.85rem 1rem; border-bottom: 1px solid #1e293b; }
-    td { padding: 0.85rem 1rem; border-bottom: 1px solid #1e293b; color: #e2e8f0; }
-    tr:hover td { background: #1a2234; }
-
-    /* Forms & Inputs */
-    label { font-size: 0.75rem; font-weight: 600; color: #94a3b8; margin-bottom: 0.35rem; display: block; }
-    select, input, textarea {
-      width: 100%;
-      background: #0f172a;
-      border: 1px solid #334155;
-      color: #f1f5f9;
-      border-radius: 0.5rem;
-      padding: 0.6rem 0.85rem;
-      font-size: 0.8rem;
-      font-family: inherit;
-      outline: none;
-      transition: border-color 0.2s;
-    }
-    select:focus, input:focus, textarea:focus { border-color: #6366f1; }
-    .btn {
-      background: #6366f1;
-      color: #fff;
-      font-weight: 600;
-      padding: 0.65rem 1.25rem;
-      border-radius: 0.6rem;
-      border: none;
-      font-size: 0.8rem;
-      cursor: pointer;
-      display: inline-flex;
-      align-items: center;
-      justify-content: center;
-      gap: 0.4rem;
-      transition: all 0.2s;
-    }
-    .btn:hover { background: #4f46e5; }
-    .btn-secondary { background: #1e293b; color: #cbd5e1; border: 1px solid #334155; }
-    .btn-secondary:hover { background: #334155; color: #fff; }
-    .btn-success { background: #10b981; color: #fff; }
-    .btn-success:hover { background: #059669; }
-    .btn-danger { background: #ef4444; color: #fff; }
-    .btn-danger:hover { background: #dc2626; }
-
-    /* Toast Notification */
-    #toast {
-      position: fixed;
-      bottom: 1.5rem;
-      right: 1.5rem;
-      background: #1e293b;
-      border: 1px solid #334155;
-      color: #fff;
-      padding: 0.85rem 1.25rem;
-      border-radius: 0.75rem;
-      box-shadow: 0 10px 25px rgba(0,0,0,0.4);
-      display: none;
-      align-items: center;
-      gap: 0.6rem;
-      z-index: 100;
-      font-size: 0.8rem;
-      max-width: 400px;
-    }
-
-    /* Certificate Box */
-    .cert-frame {
-      background: linear-gradient(135deg, #0f172a 0%, #1e1b4b 50%, #0f172a 100%);
-      border: 2px solid #3b82f6;
-      border-radius: 1.5rem;
-      padding: 2.5rem;
-      position: relative;
-      box-shadow: 0 20px 40px rgba(0,0,0,0.5);
-    }
-
-    .hidden { display: none !important; }
+    body { font-family: 'Plus Jakarta Sans', sans-serif; }
+    code, pre, .font-mono { font-family: 'JetBrains Mono', monospace; }
+    .glass-card { background: rgba(255, 255, 255, 0.95); backdrop-filter: blur(10px); }
   </style>
 </head>
-<body>
+<body class="bg-slate-50 text-slate-800 min-h-screen flex flex-col">
 
-  <!-- Synthetic Prototype Banner -->
-  <aside class="banner">
-    <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/></svg>
-    <span>SYNTHETIC DEMONSTRATION PROTOTYPE — All APAAR IDs and student records are fictional. No live government registry is connected.</span>
+  <!-- Synthetic Banner -->
+  <aside aria-label="Prototype environment notice" class="bg-amber-500 text-slate-900 text-xs font-semibold px-4 py-1.5 text-center flex items-center justify-center gap-2 shadow-inner">
+    <i data-lucide="shield-alert" class="w-4 h-4"></i>
+    <span>SYNTHETIC DEMONSTRATION PROTOTYPE ΓÇö All APAAR IDs and student records are fictional. No live government registry is connected.</span>
   </aside>
 
-  <!-- Top Header Navigation -->
-  <header>
-    <div class="container header-inner">
-      <div style="display: flex; align-items: center; gap: 0.75rem;">
-        <div style="width: 2.4rem; height: 2.4rem; border-radius: 0.6rem; background: linear-gradient(135deg, #6366f1, #10b981); display: flex; align-items: center; justify-content: center; font-weight: 800; font-size: 1.1rem; color: #fff;">
-          A
+  <!-- Top Navigation -->
+  <header class="bg-slate-900 text-white border-b border-slate-800 sticky top-0 z-50 shadow-md">
+    <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 h-16 flex items-center justify-between">
+      <div class="flex items-center gap-3">
+        <div class="w-10 h-10 rounded-xl bg-gradient-to-tr from-indigo-500 to-emerald-400 flex items-center justify-center shadow-lg shadow-indigo-500/30">
+          <i data-lucide="layers" class="w-5 h-5 text-white"></i>
         </div>
         <div>
-          <span style="font-size: 1.1rem; font-weight: 800; letter-spacing: -0.02em;">APAAR ID <span style="color: #34d399;">Core</span></span>
-          <span class="badge badge-primary" style="margin-left: 0.4rem;">AICTE PS-26263</span>
+          <span class="text-lg font-bold tracking-tight">APAAR ID <span class="text-emerald-400">Core</span></span>
+          <span class="ml-2 text-xs text-slate-400 bg-slate-800 px-2 py-0.5 rounded border border-slate-700">AICTE PS-26263</span>
         </div>
       </div>
 
-      <!-- Live Actor Switcher & API Pulse -->
-      <div style="display: flex; align-items: center; gap: 1rem;">
-        <div style="display: flex; align-items: center; gap: 0.5rem; background: #0f172a; padding: 0.4rem 0.8rem; border-radius: 0.5rem; border: 1px solid #1e293b;">
-          <span style="font-size: 0.75rem; color: #94a3b8;">Actor Role:</span>
-          <select id="roleSelector" onchange="switchRole(this.value)" style="width: auto; padding: 0.2rem 0.5rem; font-size: 0.75rem; font-weight: 600; background: transparent; border: none; color: #38bdf8; cursor: pointer;">
-            <option value="preparer">Institutional Preparer (Maker)</option>
-            <option value="certifier">Institutional Certifier (Checker)</option>
-            <option value="regulator">AICTE Regulation Bureau (Auditor)</option>
-            <option value="verifier">Third-Party Verifier (Employer)</option>
+      <!-- Live Actor Switcher -->
+      <div class="flex items-center gap-3">
+        <div class="flex items-center gap-2 bg-slate-800/80 px-3 py-1.5 rounded-lg border border-slate-700">
+          <i data-lucide="user-check" class="w-4 h-4 text-emerald-400"></i>
+          <span class="text-xs text-slate-400">Current Role:</span>
+          <select id="roleSelector" onchange="switchRole(this.value)" class="bg-transparent text-xs font-semibold text-white focus:outline-none cursor-pointer">
+            <option value="preparer" class="bg-slate-900 text-white">Preparer (Institution 1)</option>
+            <option value="certifier" class="bg-slate-900 text-white">Certifier (Institution 1)</option>
+            <option value="regulator" class="bg-slate-900 text-white">Regulator (AICTE Analyst)</option>
+            <option value="verifier" class="bg-slate-900 text-white">External Verifier (Employer)</option>
           </select>
         </div>
-
-        <div style="display: flex; align-items: center; gap: 0.4rem; font-size: 0.75rem; color: #34d399; background: rgba(16, 185, 129, 0.1); border: 1px solid rgba(16, 185, 129, 0.2); padding: 0.35rem 0.75rem; border-radius: 9999px;">
-          <span style="width: 0.5rem; height: 0.5rem; border-radius: 9999px; background: #10b981; box-shadow: 0 0 8px #10b981;"></span>
-          <span id="apiStatusText">API Live</span>
+        <div id="connectionStatus" class="flex items-center gap-1.5 text-xs text-emerald-400 bg-emerald-950/60 border border-emerald-800/60 px-2.5 py-1 rounded-full">
+          <span class="w-2 h-2 rounded-full bg-emerald-400 animate-pulse"></span>
+          <span>API Connected</span>
         </div>
       </div>
     </div>
   </header>
 
-  <!-- Main Workspace -->
-  <main class="container" style="padding-top: 1.5rem; padding-bottom: 2.5rem; flex: 1;">
-
-    <!-- Interactive Guided Walkthrough Bar -->
-    <div class="guide-bar">
-      <div>
-        <span style="font-size: 0.7rem; font-weight: 700; text-transform: uppercase; color: #818cf8; letter-spacing: 0.05em; display: block;">Interactive Demo Guide</span>
-        <span style="font-size: 0.85rem; font-weight: 600; color: #f1f5f9;">Follow the 5-step institutional assurance lifecycle:</span>
-      </div>
-      <div class="guide-steps">
-        <button onclick="runGuideStep(1)" class="guide-btn" id="guideStep1">1. Load & Stage Batch</button>
-        <button onclick="runGuideStep(2)" class="guide-btn" id="guideStep2">2. View Rule Findings</button>
-        <button onclick="runGuideStep(3)" class="guide-btn" id="guideStep3">3. Test Maker/Checker</button>
-        <button onclick="runGuideStep(4)" class="guide-btn" id="guideStep4">4. Check Overlaps</button>
-        <button onclick="runGuideStep(5)" class="guide-btn" id="guideStep5">5. Verify Certificate</button>
-      </div>
-    </div>
-
-    <!-- Navigation Tabs -->
-    <div class="tab-bar">
-      <button onclick="setTab('dashboard')" id="tab-dashboard" class="tab-item active">
-        <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="3" width="7" height="7"/><rect x="14" y="3" width="7" height="7"/><rect x="14" y="14" width="7" height="7"/><rect x="3" y="14" width="7" height="7"/></svg>
-        Monitoring Dashboard
+  <!-- Main Container -->
+  <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8 flex-1 w-full">
+    
+    <!-- Tab Nav -->
+    <div class="flex gap-2 border-b border-slate-200 mb-8 overflow-x-auto pb-2">
+      <button onclick="setTab('dashboard')" id="tab-dashboard" class="tab-btn px-4 py-2 font-semibold text-sm rounded-lg transition-all flex items-center gap-2 bg-indigo-600 text-white shadow-sm shadow-indigo-500/20">
+        <i data-lucide="layout-dashboard" class="w-4 h-4"></i> Monitoring Dashboard
       </button>
-      <button onclick="setTab('ingestion')" id="tab-ingestion" class="tab-item">
-        <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="17 8 12 3 7 8"/><line x1="12" y1="3" x2="12" y2="15"/></svg>
-        Upload & Staging Studio
+      <button onclick="setTab('ingestion')" id="tab-ingestion" class="tab-btn px-4 py-2 font-medium text-sm rounded-lg transition-all flex items-center gap-2 text-slate-600 hover:text-slate-900 hover:bg-slate-100">
+        <i data-lucide="upload-cloud" class="w-4 h-4"></i> Upload & Validation
       </button>
-      <button onclick="setTab('certification')" id="tab-certification" class="tab-item">
-        <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/><polyline points="9 11 12 14 22 4"/></svg>
-        Governance & Certification
+      <button onclick="setTab('certification')" id="tab-certification" class="tab-btn px-4 py-2 font-medium text-sm rounded-lg transition-all flex items-center gap-2 text-slate-600 hover:text-slate-900 hover:bg-slate-100">
+        <i data-lucide="stamp" class="w-4 h-4"></i> Certification (Maker/Checker)
       </button>
-      <button onclick="setTab('review')" id="tab-review" class="tab-item">
-        <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="11" cy="11" r="8"/><line x1="21" y1="21" x2="16.65" y2="16.65"/></svg>
-        Overlap Review (Regulator)
+      <button onclick="setTab('certificates')" id="tab-certificates" class="tab-btn px-4 py-2 font-medium text-sm rounded-lg transition-all flex items-center gap-2 text-slate-600 hover:text-slate-900 hover:bg-slate-100">
+        <i data-lucide="award" class="w-4 h-4"></i> Verifiable Certificates
       </button>
-      <button onclick="setTab('certificates')" id="tab-certificates" class="tab-item">
-        <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="8" r="6"/><path d="M15.477 12.89 17 22l-5-3-5 3 1.523-9.11"/></svg>
-        Verifiable Certificates
+      <button onclick="setTab('verifier')" id="tab-verifier" class="tab-btn px-4 py-2 font-medium text-sm rounded-lg transition-all flex items-center gap-2 text-slate-600 hover:text-slate-900 hover:bg-slate-100">
+        <i data-lucide="shield-check" class="w-4 h-4"></i> Cryptographic Verifier
       </button>
-      <button onclick="setTab('verifier')" id="tab-verifier" class="tab-item">
-        <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="11" width="18" height="11" rx="2" ry="2"/><path d="M7 11V7a5 5 0 0 1 10 0v4"/></svg>
-        Cryptographic Verifier
-      </button>
-      <button onclick="setTab('audit')" id="tab-audit" class="tab-item">
-        <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><polyline points="14 2 14 8 20 8"/><line x1="16" y1="13" x2="8" y2="13"/><line x1="16" y1="17" x2="8" y2="17"/><polyline points="10 9 9 9 8 9"/></svg>
-        Audit Trail
+      <button onclick="setTab('audit')" id="tab-audit" class="tab-btn px-4 py-2 font-medium text-sm rounded-lg transition-all flex items-center gap-2 text-slate-600 hover:text-slate-900 hover:bg-slate-100">
+        <i data-lucide="clipboard-list" class="w-4 h-4"></i> Audit Trail
       </button>
     </div>
 
     <!-- TAB 1: Monitoring Dashboard -->
-    <section id="content-dashboard" class="space-y-6">
-      <div class="grid-4">
-        <div class="metric-card">
-          <div class="metric-icon" style="background: rgba(99, 102, 241, 0.15); color: #818cf8;">🏛️</div>
+    <div id="content-dashboard" class="space-y-6">
+      <!-- Metric Cards -->
+      <div class="grid grid-cols-1 md:grid-cols-4 gap-5">
+        <div class="bg-white p-5 rounded-2xl border border-slate-200/80 shadow-sm flex items-center gap-4">
+          <div class="w-12 h-12 rounded-xl bg-indigo-50 text-indigo-600 flex items-center justify-center font-bold">
+            <i data-lucide="building" class="w-6 h-6"></i>
+          </div>
           <div>
-            <div style="font-size: 0.7rem; font-weight: 700; color: #94a3b8; text-transform: uppercase;">Approved Ordinary</div>
-            <div id="statApproved" style="font-size: 1.75rem; font-weight: 800; color: #fff;">160</div>
-            <div style="font-size: 0.7rem; color: #64748b;">Across registered offerings</div>
+            <p class="text-xs font-semibold uppercase tracking-wider text-slate-400">Approved Ordinary</p>
+            <h3 id="statApproved" class="text-2xl font-extrabold text-slate-900">160</h3>
+            <p class="text-[11px] text-slate-500">Across 3 offerings</p>
           </div>
         </div>
 
-        <div class="metric-card">
-          <div class="metric-icon" style="background: rgba(56, 189, 248, 0.15); color: #38bdf8;">📥</div>
+        <div class="bg-white p-5 rounded-2xl border border-slate-200/80 shadow-sm flex items-center gap-4">
+          <div class="w-12 h-12 rounded-xl bg-blue-50 text-blue-600 flex items-center justify-center font-bold">
+            <i data-lucide="file-check" class="w-6 h-6"></i>
+          </div>
           <div>
-            <div style="font-size: 0.7rem; font-weight: 700; color: #94a3b8; text-transform: uppercase;">Reported Intake</div>
-            <div id="statReported" style="font-size: 1.75rem; font-weight: 800; color: #38bdf8;">0</div>
-            <div style="font-size: 0.7rem; color: #38bdf8;">Staged in batches</div>
+            <p class="text-xs font-semibold uppercase tracking-wider text-slate-400">Reported Intake</p>
+            <h3 id="statReported" class="text-2xl font-extrabold text-slate-900">12</h3>
+            <p class="text-[11px] text-blue-600 font-medium">Under review</p>
           </div>
         </div>
 
-        <div class="metric-card">
-          <div class="metric-icon" style="background: rgba(16, 185, 129, 0.15); color: #34d399;">🔒</div>
+        <div class="bg-white p-5 rounded-2xl border border-slate-200/80 shadow-sm flex items-center gap-4">
+          <div class="w-12 h-12 rounded-xl bg-emerald-50 text-emerald-600 flex items-center justify-center font-bold">
+            <i data-lucide="badge-check" class="w-6 h-6"></i>
+          </div>
           <div>
-            <div style="font-size: 0.7rem; font-weight: 700; color: #94a3b8; text-transform: uppercase;">Quality Certified</div>
-            <div id="statCertified" style="font-size: 1.75rem; font-weight: 800; color: #34d399;">0</div>
-            <div style="font-size: 0.7rem; color: #34d399;">Snapshot Locked</div>
+            <p class="text-xs font-semibold uppercase tracking-wider text-slate-400">Quality Certified</p>
+            <h3 id="statCertified" class="text-2xl font-extrabold text-slate-900">10</h3>
+            <p class="text-[11px] text-emerald-600 font-medium">Snapshot Locked</p>
           </div>
         </div>
 
-        <div class="metric-card">
-          <div class="metric-icon" style="background: rgba(245, 158, 11, 0.15); color: #fbbf24;">⚡</div>
+        <div class="bg-white p-5 rounded-2xl border border-slate-200/80 shadow-sm flex items-center gap-4">
+          <div class="w-12 h-12 rounded-xl bg-amber-50 text-amber-600 flex items-center justify-center font-bold">
+            <i data-lucide="shield-check" class="w-6 h-6"></i>
+          </div>
           <div>
-            <div style="font-size: 0.7rem; font-weight: 700; color: #94a3b8; text-transform: uppercase;">Active Rules</div>
-            <div style="font-size: 1.75rem; font-weight: 800; color: #fbbf24;">14 Rules</div>
-            <div style="font-size: 0.7rem; color: #64748b;">VR-001 through VR-014</div>
+            <p class="text-xs font-semibold uppercase tracking-wider text-slate-400">Rule Pass Rate</p>
+            <h3 id="statQuality" class="text-2xl font-extrabold text-slate-900">100%</h3>
+            <p class="text-[11px] text-slate-500">14 Active Rules</p>
           </div>
         </div>
       </div>
 
-      <!-- Capacity Reconciliation Table -->
-      <div class="card">
-        <div style="display: flex; align-items: center; justify-content: space-between; margin-bottom: 1.25rem;">
+      <!-- Offering Reconciliation Table -->
+      <div class="bg-white rounded-2xl border border-slate-200 shadow-sm overflow-hidden">
+        <div class="p-5 border-b border-slate-100 flex items-center justify-between">
           <div>
-            <h2 style="font-size: 1.05rem; font-weight: 700; color: #fff;">Programme Offerings & Capacity Reconciliation</h2>
-            <p style="font-size: 0.75rem; color: #94a3b8;">Committed snapshot comparison: Approved vs Reported vs Certified admissions</p>
+            <h2 class="font-bold text-slate-900 text-base">Programme Offerings & Capacity Reconciliation</h2>
+            <p class="text-xs text-slate-500">Committed snapshot comparison: Approved vs Reported vs Certified admissions</p>
           </div>
-          <button onclick="refreshDashboard()" class="btn btn-secondary" style="padding: 0.4rem 0.8rem; font-size: 0.75rem;">
-            🔄 Refresh Metrics
+          <button onclick="refreshDashboard()" class="text-xs bg-slate-100 hover:bg-slate-200 text-slate-700 px-3 py-1.5 rounded-lg font-medium flex items-center gap-1.5 transition">
+            <i data-lucide="refresh-cw" class="w-3.5 h-3.5"></i> Refresh
           </button>
         </div>
-
-        <div class="table-container">
-          <table>
-            <thead>
+        <div class="overflow-x-auto">
+          <table class="w-full text-left text-sm">
+            <thead class="bg-slate-50 text-slate-600 text-xs font-semibold uppercase tracking-wider">
               <tr>
-                <th>Course / Programme</th>
-                <th>Level</th>
-                <th>Approved Ordinary</th>
-                <th>Supernumerary</th>
-                <th>Reported Intake</th>
-                <th>Quality Certified</th>
-                <th>Capacity Utilisation</th>
+                <th class="px-5 py-3">Course / Programme</th>
+                <th class="px-5 py-3">Level</th>
+                <th class="px-5 py-3">Approved Ordinary</th>
+                <th class="px-5 py-3">Supernumerary</th>
+                <th class="px-5 py-3">Reported</th>
+                <th class="px-5 py-3">Certified</th>
+                <th class="px-5 py-3">Utilisation</th>
               </tr>
             </thead>
-            <tbody id="offeringsTableBody">
-              <tr><td colspan="7" style="text-align: center; color: #64748b; padding: 2rem;">Loading offerings from database...</td></tr>
+            <tbody id="offeringsTableBody" class="divide-y divide-slate-100">
+              <!-- Loaded via JS -->
             </tbody>
           </table>
         </div>
       </div>
-    </section>
+    </div>
 
-    <!-- TAB 2: Upload & Staging Studio -->
-    <section id="content-ingestion" class="hidden">
-      <div class="grid-2">
-        <!-- Input Form -->
-        <div class="card space-y-4">
-          <div style="display: flex; align-items: center; justify-content: space-between;">
-            <h2 style="font-size: 1rem; font-weight: 700; color: #fff;">Stage New Enrolment Batch</h2>
-            <span class="badge badge-primary">Requirement R1 & R2</span>
-          </div>
-          <p style="font-size: 0.75rem; color: #94a3b8;">
-            Select a target offering and load a synthetic demo batch to stage records into the validation pipeline.
+    <!-- TAB 2: Ingestion & Validation -->
+    <div id="content-ingestion" class="hidden space-y-6">
+      <div class="grid grid-cols-1 md:grid-cols-3 gap-6">
+        <!-- Upload Form -->
+        <div class="bg-white p-6 rounded-2xl border border-slate-200 shadow-sm space-y-4">
+          <h2 class="font-bold text-slate-900 text-base flex items-center gap-2">
+            <i data-lucide="upload" class="w-5 h-5 text-indigo-600"></i> Stage Enrolment Batch
+          </h2>
+          <p class="text-xs text-slate-500 leading-relaxed">
+            Upload CSV or typed JSON with student rows. Bounded file limits (10MB, max 10k rows). Preserves leading zeros in APAAR and Student IDs.
           </p>
 
-          <div>
-            <label for="uploadOfferingSelect">Target Programme Offering:</label>
-            <select id="uploadOfferingSelect"></select>
-          </div>
-
-          <div>
-            <label for="cohortInput">Admission Cohort:</label>
-            <input id="cohortInput" type="text" value="2024-25" class="font-mono">
-          </div>
-
-          <div>
-            <label>Load Synthetic Demo Fixture:</label>
-            <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 0.5rem; margin-top: 0.35rem;">
-              <button onclick="loadPreset('clean')" class="btn btn-secondary" style="font-size: 0.75rem; padding: 0.45rem;">
-                ✅ Clean 2-Student Batch
-              </button>
-              <button onclick="loadPreset('duplicate')" class="btn btn-secondary" style="font-size: 0.75rem; padding: 0.45rem;">
-                ⚠️ Duplicate / Warnings
+          <div class="space-y-3 text-xs">
+            <div>
+              <label for="uploadOfferingSelect" class="font-semibold text-slate-700 block mb-1">Target Programme Offering:</label>
+              <select id="uploadOfferingSelect" class="w-full border border-slate-300 rounded-lg p-2 bg-slate-50 font-medium">
+                <!-- Offerings populated via JS -->
+              </select>
+            </div>
+            <div>
+              <label for="cohortInput" class="font-semibold text-slate-700 block mb-1">Admission Cohort:</label>
+              <input id="cohortInput" type="text" value="2024-25" class="w-full border border-slate-300 rounded-lg p-2 bg-slate-50 font-mono">
+            </div>
+            <div>
+              <label for="quickFillBtn" class="font-semibold text-slate-700 block mb-1">Demo CSV Fixture:</label>
+              <button id="quickFillBtn" onclick="quickFillCsv()" class="w-full bg-slate-100 hover:bg-slate-200 text-slate-700 font-semibold py-2 rounded-lg transition text-xs border border-slate-200">
+                Load 2 Synthetic Students (1 Ordinary + 1 Supernumerary)
               </button>
             </div>
           </div>
 
-          <div>
-            <label for="csvPreviewTextarea">CSV Payload Preview (Leading Zeros Preserved):</label>
-            <textarea id="csvPreviewTextarea" rows="6" class="font-mono" style="font-size: 0.72rem;"></textarea>
-          </div>
-
-          <button onclick="submitBatch()" id="btnSubmitBatch" class="btn" style="width: 100%; padding: 0.75rem;">
-            🚀 Upload, Stage & Run Rules
+          <button onclick="submitBatch()" id="btnSubmitBatch" class="w-full bg-indigo-600 hover:bg-indigo-700 text-white font-semibold py-2.5 rounded-xl transition shadow-md shadow-indigo-600/20 text-xs flex items-center justify-center gap-2">
+            <i data-lucide="send" class="w-4 h-4"></i> Upload & Stage Submission
           </button>
         </div>
 
         <!-- Validation Execution Panel -->
-        <div class="card space-y-4">
-          <div style="display: flex; align-items: center; justify-content: space-between;">
-            <h2 style="font-size: 1rem; font-weight: 700; color: #fff;">Validation Engine Output</h2>
-            <span id="activeSubmissionBadge" class="badge badge-warning">No Active Submission</span>
+        <div class="md:col-span-2 bg-white p-6 rounded-2xl border border-slate-200 shadow-sm space-y-4">
+          <div class="flex items-center justify-between">
+            <h2 class="font-bold text-slate-900 text-base flex items-center gap-2">
+              <i data-lucide="shield-check" class="w-5 h-5 text-emerald-600"></i> Validation & Rule Execution
+            </h2>
+            <span id="activeSubmissionBadge" class="text-xs px-2.5 py-1 rounded-full bg-slate-100 text-slate-600 font-medium">No Active Submission</span>
           </div>
 
-          <div id="validationResultSummary" style="background: #0f172a; padding: 1rem; border-radius: 0.75rem; border: 1px solid #1e293b; font-size: 0.8rem;">
-            <p style="color: #64748b; font-style: italic;">Stage a submission on the left to trigger validation rules VR-001 through VR-014.</p>
+          <div id="validationResultBox" class="p-4 rounded-xl bg-slate-50 border border-slate-200 text-xs space-y-2">
+            <p class="text-slate-500 italic">Stage a submission to trigger rule evaluation (VR-001 through VR-014).</p>
           </div>
 
-          <h3 style="font-size: 0.8rem; font-weight: 700; color: #94a3b8; text-transform: uppercase;">Evaluated Rule Findings</h3>
-          <div id="findingsContainer" style="max-height: 280px; overflow-y: auto; display: flex; flex-direction: column; gap: 0.5rem;">
-            <p style="font-size: 0.75rem; color: #64748b; font-style: italic;">No findings generated yet.</p>
+          <!-- Findings List -->
+          <div>
+            <h4 class="text-xs font-bold uppercase text-slate-500 mb-2">Rule Evaluation Findings</h4>
+            <div id="findingsList" class="space-y-2 max-h-64 overflow-y-auto pr-1">
+              <p class="text-xs text-slate-400 italic">No findings recorded yet.</p>
+            </div>
           </div>
         </div>
       </div>
-    </section>
+    </div>
 
-    <!-- TAB 3: Governance & Maker/Checker Certification -->
-    <section id="content-certification" class="hidden">
-      <div class="card" style="max-width: 680px; margin: 0 auto; display: flex; flex-direction: column; gap: 1.25rem;">
-        <div style="border-bottom: 1px solid #1e293b; padding-bottom: 1rem;">
-          <div style="display: flex; align-items: center; justify-content: space-between;">
-            <h2 style="font-size: 1.15rem; font-weight: 700; color: #fff;">Maker / Checker Quality Certification</h2>
-            <span class="badge badge-primary">Requirement R8</span>
-          </div>
-          <p style="font-size: 0.75rem; color: #94a3b8; margin-top: 0.35rem;">
-            Enforces strict separation of duties: The preparer who created the submission (Maker) CANNOT certify it. An independent authorized certifier must approve.
+    <!-- TAB 3: Certification (Maker/Checker) -->
+    <div id="content-certification" class="hidden space-y-6">
+      <div class="bg-white p-6 rounded-2xl border border-slate-200 shadow-sm max-w-2xl mx-auto space-y-5">
+        <div class="border-b border-slate-100 pb-4">
+          <h2 class="font-bold text-slate-900 text-lg flex items-center gap-2">
+            <i data-lucide="stamp" class="w-6 h-6 text-emerald-600"></i> Maker / Checker Quality Certification
+          </h2>
+          <p class="text-xs text-slate-500 mt-1">
+            Requirement R8 separation of duties: The subject who created the submission (Maker) CANNOT certify it. A distinct authorized Certifier must approve.
           </p>
         </div>
 
-        <div style="background: #0f172a; border: 1px solid #1e293b; border-radius: 0.75rem; padding: 1rem; font-size: 0.8rem; display: flex; flex-direction: column; gap: 0.6rem;">
-          <div style="display: flex; justify-content: space-between;">
-            <span style="color: #94a3b8;">Active Submission ID:</span>
-            <span id="certSubId" class="font-mono" style="color: #38bdf8;">None (Please stage a batch first)</span>
+        <div class="bg-slate-50 p-4 rounded-xl border border-slate-200 text-xs space-y-2">
+          <div class="flex justify-between">
+            <span class="text-slate-500">Submission ID:</span>
+            <span id="certSubId" class="font-mono font-medium text-slate-800">None</span>
           </div>
-          <div style="display: flex; justify-content: space-between;">
-            <span style="color: #94a3b8;">Submission Status:</span>
-            <span id="certSubStatus" class="badge badge-warning">Awaiting Staging</span>
+          <div class="flex justify-between">
+            <span class="text-slate-500">Current Status:</span>
+            <span id="certSubStatus" class="font-semibold text-amber-600">Awaiting Staging</span>
           </div>
-          <div style="display: flex; justify-content: space-between;">
-            <span style="color: #94a3b8;">Staged By (Maker):</span>
-            <span id="certMaker" class="font-mono" style="color: #e2e8f0;">-</span>
+          <div class="flex justify-between">
+            <span class="text-slate-500">Created By (Maker):</span>
+            <span id="certMaker" class="font-mono text-slate-700">-</span>
           </div>
-          <div style="display: flex; justify-content: space-between;">
-            <span style="color: #94a3b8;">Your Current Actor:</span>
-            <span id="certCurrentSubject" class="font-mono" style="color: #818cf8;">preparer-inst1@demo.synthetic</span>
+          <div class="flex justify-between">
+            <span class="text-slate-500">Your Current Subject:</span>
+            <span id="certCurrentSubject" class="font-mono text-slate-700">preparer-inst1@demo.synthetic</span>
           </div>
         </div>
 
-        <!-- Testing Buttons -->
-        <div style="display: flex; flex-direction: column; gap: 0.75rem;">
-          <button onclick="testMakerSelfApproval()" class="btn btn-danger" style="padding: 0.75rem;">
-            ❌ Test Maker Self-Approval (Expect 403 SELF_APPROVAL_DENIED)
+        <!-- Action Button -->
+        <div class="space-y-2">
+          <button onclick="attemptCertification()" class="w-full bg-emerald-600 hover:bg-emerald-700 text-white font-semibold py-3 rounded-xl transition shadow-md shadow-emerald-600/20 text-sm flex items-center justify-center gap-2">
+            <i data-lucide="check-circle" class="w-4 h-4"></i> Certify Enrolment Snapshot
           </button>
-          <button onclick="testAuthorizedCertification()" class="btn btn-success" style="padding: 0.75rem;">
-            ✅ Certify as Independent Checker (Expect 200 OK & Lock)
-          </button>
+          <p class="text-[11px] text-slate-400 text-center">
+            Tip: Attempt certifying while in the "Preparer" role to verify the <span class="text-red-500 font-mono">SELF_APPROVAL_DENIED</span> constraint!
+          </p>
         </div>
 
-        <div id="certificationFeedback" class="hidden" style="padding: 1rem; border-radius: 0.75rem; font-size: 0.8rem;"></div>
+        <div id="certificationFeedback" class="hidden p-4 rounded-xl text-xs"></div>
       </div>
-    </section>
+    </div>
 
-    <!-- TAB 4: Overlap Review (AICTE Regulator) -->
-    <section id="content-review" class="hidden space-y-6">
-      <div class="card">
-        <div style="display: flex; align-items: center; justify-content: space-between; margin-bottom: 1rem;">
-          <div>
-            <h2 style="font-size: 1.05rem; font-weight: 700; color: #fff;">Cross-Institution Overlap Review Cases</h2>
-            <p style="font-size: 0.75rem; color: #94a3b8;">Central matching operation detecting temporal collisions without global active-APAAR ban. Counterpart PII suppressed.</p>
-          </div>
-          <button onclick="triggerOverlapScan()" class="btn" style="padding: 0.4rem 0.85rem; font-size: 0.75rem;">
-            🔍 Scan Active Batch for Overlaps
-          </button>
-        </div>
-
-        <div class="table-container">
-          <table>
-            <thead>
-              <tr>
-                <th>Case ID</th>
-                <th>Type</th>
-                <th>Status</th>
-                <th>Opened By</th>
-                <th>Opened At</th>
-                <th>Resolution / Accountable Decision</th>
-                <th>Actions</th>
-              </tr>
-            </thead>
-            <tbody id="reviewCasesTableBody">
-              <tr><td colspan="7" style="text-align: center; color: #64748b; padding: 2rem;">No active review cases. Click 'Scan Active Batch' to test.</td></tr>
-            </tbody>
-          </table>
-        </div>
-      </div>
-    </section>
-
-    <!-- TAB 5: Verifiable Certificates -->
-    <section id="content-certificates" class="hidden">
-      <div style="max-width: 680px; margin: 0 auto;">
-        <div class="cert-frame">
-          <div style="text-align: center; border-bottom: 1px solid rgba(255,255,255,0.1); padding-bottom: 1.5rem; margin-bottom: 1.5rem;">
-            <div style="width: 3.5rem; height: 3.5rem; margin: 0 auto 0.75rem; background: rgba(245, 158, 11, 0.2); border: 1px solid rgba(245, 158, 11, 0.4); border-radius: 1rem; display: flex; align-items: center; justify-content: center; font-size: 1.5rem;">
-              🎓
+    <!-- TAB 4: Verifiable Certificates -->
+    <div id="content-certificates" class="hidden space-y-6">
+      <div class="max-w-2xl mx-auto">
+        <!-- High-fidelity Academic Certificate Card -->
+        <div class="bg-white rounded-3xl border-2 border-slate-300 shadow-xl overflow-hidden relative">
+          <!-- Decorative Certificate Header -->
+          <div class="bg-gradient-to-r from-slate-900 via-indigo-950 to-slate-900 p-8 text-center text-white relative">
+            <div class="w-16 h-16 mx-auto rounded-2xl bg-amber-400/20 border border-amber-300/40 flex items-center justify-center mb-3">
+              <i data-lucide="award" class="w-8 h-8 text-amber-400"></i>
             </div>
-            <h2 style="font-size: 1.35rem; font-weight: 800; color: #fde68a; text-transform: uppercase; letter-spacing: 0.05em;">Demo Engineering College (Synthetic)</h2>
-            <p style="font-size: 0.75rem; color: #94a3b8; margin-top: 0.25rem;">Autonomous Institution Approved by AICTE • Demonstration Record</p>
+            <h2 class="text-xl font-extrabold tracking-wide uppercase text-amber-300">Demo Engineering College (Synthetic)</h2>
+            <p class="text-xs text-slate-300 mt-1">Autonomous Institution Approved by AICTE (Prototype Record)</p>
+            <div class="absolute top-4 right-4 bg-amber-400/20 border border-amber-300/40 text-amber-300 text-[10px] px-2.5 py-0.5 rounded-full font-bold uppercase">
+              Verifiable Enrolment
+            </div>
           </div>
 
-          <div style="text-align: center; margin-bottom: 2rem;">
-            <span style="font-size: 0.7rem; font-weight: 700; text-transform: uppercase; letter-spacing: 0.1em; color: #38bdf8; display: block; margin-bottom: 0.5rem;">Academic Enrolment Assurance Certificate</span>
-            <h3 style="font-size: 1.5rem; font-weight: 700; color: #fff;">Synthetic Student DEMO-0001</h3>
-            <p style="font-size: 0.85rem; color: #cbd5e1; margin-top: 0.5rem; max-width: 480px; margin-left: auto; margin-right: auto;">
-              has been officially verified and admitted to <strong style="color: #fff;">B.Tech Computer Science (Synthetic)</strong> for the academic cohort <strong style="color: #fff;">2024-25</strong>.
+          <!-- Body -->
+          <div class="p-8 space-y-6 text-center">
+            <p class="text-xs uppercase tracking-widest text-slate-400 font-semibold">Institutional Student Enrolment Certificate</p>
+            <h3 class="text-2xl font-bold text-slate-900">Synthetic Student 0001</h3>
+            <p class="text-sm text-slate-600 max-w-md mx-auto">
+              has been duly enrolled in the <span class="font-semibold text-slate-900">B.Tech Computer Science (Synthetic)</span> programme for the academic cohort <span class="font-semibold text-slate-900">2024-25</span>.
             </p>
-          </div>
 
-          <!-- Dual Identifiers Display (Requirement R10) -->
-          <div style="background: rgba(15, 23, 42, 0.8); border: 1px solid #334155; border-radius: 1rem; padding: 1.25rem; display: grid; grid-template-columns: 1fr 1fr; gap: 1rem; margin-bottom: 1.5rem; text-align: center;">
-            <div style="border-right: 1px solid #334155; padding-right: 0.75rem;">
-              <span style="font-size: 0.7rem; color: #94a3b8; text-transform: uppercase; font-weight: 700; display: block;">APAAR ID</span>
-              <span id="certCardApaar" class="font-mono" style="font-size: 1.15rem; font-weight: 800; color: #818cf8; letter-spacing: 0.05em;">1234 5678 9012</span>
-              <span style="font-size: 0.65rem; color: #64748b; display: block; margin-top: 0.2rem;">Synthetic Registry Token</span>
-            </div>
-            <div style="padding-left: 0.75rem;">
-              <span style="font-size: 0.7rem; color: #94a3b8; text-transform: uppercase; font-weight: 700; display: block;">Local Student ID</span>
-              <span id="certCardLocalId" class="font-mono" style="font-size: 1.15rem; font-weight: 800; color: #34d399;">DEMO-2024-0001</span>
-              <span style="font-size: 0.65rem; color: #64748b; display: block; margin-top: 0.2rem;">Institutional Identifier</span>
-            </div>
-          </div>
-
-          <!-- Opaque QR Reference Badge -->
-          <div style="background: #0f172a; border: 1px solid #1e293b; border-radius: 0.75rem; padding: 1rem; display: flex; align-items: center; justify-content: space-between;">
-            <div style="display: flex; align-items: center; gap: 0.75rem;">
-              <div style="width: 2.5rem; height: 2.5rem; background: #fff; border-radius: 0.4rem; display: flex; align-items: center; justify-content: center; font-size: 1.25rem;">
-                📱
+            <!-- Dual Identifiers Display (Requirement R10) -->
+            <div class="bg-slate-50 border border-slate-200 rounded-2xl p-4 grid grid-cols-2 gap-4 max-w-lg mx-auto">
+              <div class="border-r border-slate-200 pr-2">
+                <span class="text-[11px] font-semibold text-slate-400 uppercase tracking-wider block">APAAR ID</span>
+                <span class="text-lg font-bold font-mono text-indigo-600 tracking-wider">1234 5678 9012</span>
+                <span class="text-[10px] text-slate-400 block mt-0.5">Synthetic 12-digit token</span>
               </div>
-              <div>
-                <span style="font-size: 0.75rem; font-weight: 700; color: #34d399; display: block;">Opaque QR Verification Token</span>
-                <span id="certQrRef" class="font-mono" style="font-size: 0.65rem; color: #94a3b8;">/api/v1/attestations/certificates/DEMO-2024-0001</span>
+              <div class="pl-2">
+                <span class="text-[11px] font-semibold text-slate-400 uppercase tracking-wider block">Local Student ID</span>
+                <span class="text-lg font-bold font-mono text-slate-800">DEMO-2024-0001</span>
+                <span class="text-[10px] text-slate-400 block mt-0.5">Institutional identifier</span>
               </div>
             </div>
-            <button onclick="setTab('verifier')" class="btn" style="padding: 0.4rem 0.8rem; font-size: 0.75rem;">
-              Verify JWS Now
-            </button>
+
+            <!-- Opaque QR Reference Badge -->
+            <div class="flex items-center justify-between bg-slate-900 text-white rounded-xl p-4 text-left">
+              <div class="flex items-center gap-3">
+                <div class="w-12 h-12 bg-white rounded-lg p-1.5 flex items-center justify-center">
+                  <i data-lucide="qr-code" class="w-8 h-8 text-slate-900"></i>
+                </div>
+                <div>
+                  <span class="text-xs font-bold block text-emerald-400">Cryptographically Verifiable</span>
+                  <span class="text-[11px] text-slate-400 font-mono">Reference: /api/v1/attestations/certificates/0001</span>
+                </div>
+              </div>
+              <button onclick="setTab('verifier')" class="text-xs bg-emerald-500 hover:bg-emerald-600 text-slate-950 font-bold px-3 py-2 rounded-lg transition">
+                Verify Now
+              </button>
+            </div>
+          </div>
+
+          <!-- Synthetic Provenance Disclaimer Footer -->
+          <div class="bg-slate-100 border-t border-slate-200 px-6 py-3 text-center text-[11px] text-slate-500">
+            Prov: SYNTHETIC_MOCK_PROVENANCE ΓÇö Generated for AICTE PS-26263 Demonstration. Not an official national credential.
           </div>
         </div>
       </div>
-    </section>
+    </div>
 
-    <!-- TAB 6: Cryptographic Verifier -->
-    <section id="content-verifier" class="hidden">
-      <div class="card" style="max-width: 680px; margin: 0 auto; display: flex; flex-direction: column; gap: 1.25rem;">
+    <!-- TAB 5: Cryptographic Verifier -->
+    <div id="content-verifier" class="hidden space-y-6">
+      <div class="max-w-2xl mx-auto bg-white p-6 rounded-2xl border border-slate-200 shadow-sm space-y-5">
         <div>
-          <div style="display: flex; align-items: center; justify-content: space-between;">
-            <h2 style="font-size: 1.15rem; font-weight: 700; color: #fff;">Cryptographic JWS Token Verifier</h2>
-            <span class="badge badge-primary">Requirement R6</span>
-          </div>
-          <p style="font-size: 0.75rem; color: #94a3b8; margin-top: 0.35rem;">
-            Validates JWS compact tokens: decomposes digital signature validity, issuer registry trust, expiry, and revocation status.
+          <h2 class="font-bold text-slate-900 text-lg flex items-center gap-2">
+            <i data-lucide="shield-check" class="w-6 h-6 text-indigo-600"></i> Signed Record Verifier
+          </h2>
+          <p class="text-xs text-slate-500 mt-1">
+            Validates JWS compact tokens: decomposes signature validity, issuer trust, time bounds, and active revocation status.
           </p>
         </div>
 
-        <div>
-          <label for="attestationTokenInput">Signed JWS Attestation Token:</label>
-          <textarea id="attestationTokenInput" rows="4" class="font-mono" style="font-size: 0.72rem;" placeholder="Click 'Generate Fresh Token' below..."></textarea>
-          <div style="display: flex; gap: 0.5rem; margin-top: 0.5rem;">
-            <button onclick="generateFreshToken()" class="btn btn-secondary" style="flex: 1; font-size: 0.75rem;">
-              🔑 1. Generate Signed JWS Token
+        <div class="space-y-3">
+          <label for="attestationTokenInput" class="text-xs font-semibold text-slate-700 block">JWS Attestation Token:</label>
+          <textarea id="attestationTokenInput" rows="4" class="w-full border border-slate-300 rounded-xl p-3 text-xs font-mono bg-slate-50 text-slate-700 focus:outline-none focus:ring-2 focus:ring-indigo-500" placeholder="eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9..."></textarea>
+          <div class="flex gap-2">
+            <button onclick="generateFreshToken()" class="text-xs bg-slate-100 hover:bg-slate-200 text-slate-700 font-semibold px-3 py-2 rounded-lg transition border border-slate-200">
+              Generate Fresh Attestation
             </button>
-            <button onclick="verifyToken()" class="btn" style="flex: 1; font-size: 0.75rem;">
-              🔍 2. Verify Cryptographic Integrity
+            <button onclick="verifyToken()" class="text-xs bg-indigo-600 hover:bg-indigo-700 text-white font-semibold px-4 py-2 rounded-lg transition shadow-md shadow-indigo-600/20 flex-1">
+              Verify Token Authenticity
             </button>
           </div>
         </div>
 
-        <!-- 5-Point Verification Results -->
-        <div id="verifierResultsBox" class="hidden" style="background: #0f172a; border: 1px solid #1e293b; border-radius: 0.75rem; padding: 1rem; display: flex; flex-direction: column; gap: 0.5rem;">
-          <h3 style="font-size: 0.75rem; font-weight: 700; color: #94a3b8; text-transform: uppercase;">Cryptographic Evaluation Matrix</h3>
-          <div id="verifStructure" class="badge badge-success" style="padding: 0.5rem 0.75rem;">✔ Structure: Valid Compact JWS</div>
-          <div id="verifSignature" class="badge badge-success" style="padding: 0.5rem 0.75rem;">✔ Digital Signature: Verified (HMAC-SHA256)</div>
-          <div id="verifIssuer" class="badge badge-success" style="padding: 0.5rem 0.75rem;">✔ Issuer Trust: Trusted (apaar-core-platform)</div>
-          <div id="verifTime" class="badge badge-success" style="padding: 0.5rem 0.75rem;">✔ Time Validity: Valid (Not Expired)</div>
-          <div id="verifStatus" class="badge badge-success" style="padding: 0.5rem 0.75rem;">✔ Revocation Status: ACTIVE</div>
+        <!-- Verification Results Checklist -->
+        <div id="verifierResultsBox" class="hidden border border-slate-200 rounded-xl p-4 bg-slate-50 space-y-3">
+          <h4 class="text-xs font-bold uppercase text-slate-600">Verification Inspection</h4>
+          <div class="grid grid-cols-2 gap-2 text-xs">
+            <div id="checkStructure" class="p-2.5 rounded-lg bg-white border border-slate-200 flex items-center gap-2">
+              <i data-lucide="check-circle" class="w-4 h-4 text-emerald-500"></i>
+              <span>Structure Valid</span>
+            </div>
+            <div id="checkSignature" class="p-2.5 rounded-lg bg-white border border-slate-200 flex items-center gap-2">
+              <i data-lucide="check-circle" class="w-4 h-4 text-emerald-500"></i>
+              <span>Signature Valid</span>
+            </div>
+            <div id="checkIssuer" class="p-2.5 rounded-lg bg-white border border-slate-200 flex items-center gap-2">
+              <i data-lucide="check-circle" class="w-4 h-4 text-emerald-500"></i>
+              <span>Trusted Issuer</span>
+            </div>
+            <div id="checkStatus" class="p-2.5 rounded-lg bg-white border border-slate-200 flex items-center gap-2">
+              <i data-lucide="check-circle" class="w-4 h-4 text-emerald-500"></i>
+              <span>Status: ACTIVE</span>
+            </div>
+          </div>
         </div>
       </div>
-    </section>
+    </div>
 
-    <!-- TAB 7: Audit Trail -->
-    <section id="content-audit" class="hidden">
-      <div class="card">
-        <div style="display: flex; align-items: center; justify-content: space-between; margin-bottom: 1rem;">
+    <!-- TAB 6: Audit Trail -->
+    <div id="content-audit" class="hidden space-y-6">
+      <div class="bg-white rounded-2xl border border-slate-200 shadow-sm overflow-hidden">
+        <div class="p-5 border-b border-slate-100 flex items-center justify-between">
           <div>
-            <h2 style="font-size: 1.05rem; font-weight: 700; color: #fff;">Immutable Platform Audit Trail</h2>
-            <p style="font-size: 0.75rem; color: #94a3b8;">Tamper-evident log of all admissions, certifications, review decisions, and disclosures.</p>
+            <h2 class="font-bold text-slate-900 text-base">Immutable Audit Event Ledger</h2>
+            <p class="text-xs text-slate-500">Append-only action audit logs. Sensitive student identifiers are never written to log entries.</p>
           </div>
-          <button onclick="refreshAudit()" class="btn btn-secondary" style="padding: 0.4rem 0.8rem; font-size: 0.75rem;">
-            🔄 Refresh Logs
+          <button onclick="refreshAudit()" class="text-xs bg-slate-100 hover:bg-slate-200 text-slate-700 px-3 py-1.5 rounded-lg font-medium flex items-center gap-1.5 transition">
+            <i data-lucide="refresh-cw" class="w-3.5 h-3.5"></i> Refresh Logs
           </button>
         </div>
-
-        <div class="table-container">
-          <table>
-            <thead>
+        <div class="overflow-x-auto">
+          <table class="w-full text-left text-xs">
+            <thead class="bg-slate-50 text-slate-600 font-semibold uppercase tracking-wider">
               <tr>
-                <th>Timestamp</th>
-                <th>Principal Subject</th>
-                <th>Action</th>
-                <th>Object Type</th>
-                <th>Outcome</th>
-                <th>Purpose</th>
+                <th class="px-5 py-3">Timestamp</th>
+                <th class="px-5 py-3">Principal</th>
+                <th class="px-5 py-3">Action</th>
+                <th class="px-5 py-3">Object</th>
+                <th class="px-5 py-3">Outcome</th>
+                <th class="px-5 py-3">Purpose</th>
               </tr>
             </thead>
-            <tbody id="auditTableBody">
-              <tr><td colspan="6" style="text-align: center; color: #64748b; padding: 2rem;">No audit logs yet.</td></tr>
+            <tbody id="auditTableBody" class="divide-y divide-slate-100 font-mono">
+              <!-- Loaded via JS -->
             </tbody>
           </table>
         </div>
       </div>
-    </section>
+    </div>
 
-  </main>
+  </div>
 
-  <footer style="background: #0f172a; border-top: 1px solid #1e293b; padding: 1.5rem 0; text-align: center; font-size: 0.75rem; color: #64748b;">
-    <p>APAAR ID Core — AICTE Problem Statement 26263 Demonstration Blueprint</p>
-    <p style="margin-top: 0.25rem;">Python 3.12 • FastAPI • SQLAlchemy 2.0 • Synthetic / Mock Verification Only</p>
+  <footer class="bg-slate-900 text-slate-400 text-xs py-6 border-t border-slate-800 text-center">
+    <p>APAAR ID Core ΓÇö AICTE Problem Statement 26263 Demonstration Blueprint</p>
+    <p class="text-slate-500 mt-1">Python 3.12 ΓÇó FastAPI ΓÇó PostgreSQL / SQLite Architecture ΓÇó Synthetic / Mock Verification Only</p>
   </footer>
 
-  <!-- Toast Notification Box -->
-  <div id="toast"></div>
-
-  <!-- Client Script -->
+  <!-- App Script -->
   <script>
-    // State
     let currentRole = "preparer";
     let currentToken = "";
     let activeSubmissionId = null;
     let selectedOfferingId = null;
     let institutionId = null;
-    let allOfferings = [];
 
     const ROLES = {
       preparer: { subject: "preparer-inst1@demo.synthetic", roles: ["PREPARER"], code: "DEMO-INST-001" },
       certifier: { subject: "certifier-inst1@demo.synthetic", roles: ["CERTIFIER"], code: "DEMO-INST-001" },
       regulator: { subject: "regulator@demo.synthetic", roles: ["REGULATOR"], code: null },
-      verifier: { subject: "verifier@demo.synthetic", roles: ["VERIFIER"], code: null }
+      verifier: { subject: "verifier@demo.synthetic", roles: ["VERIFIER"], code: null },
     };
 
-    const PRESETS = {
-      clean: (
-        "local_student_id,apaar_id,entry_route,category,is_nri,is_oci,is_fn,admission_cohort,current_study_year,interval_start\n" +
-        "DEMO-2024-0001,123456789012,DIRECT,GENERAL,false,false,false,2024-25,1,2024-08-01\n" +
-        "DEMO-2024-0002,234567890123,DIRECT,SUPERNUMERARY,false,false,true,2024-25,1,2024-08-01\n"
-      ),
-      duplicate: (
-        "local_student_id,apaar_id,entry_route,category,is_nri,is_oci,is_fn,admission_cohort,current_study_year,interval_start\n" +
-        "DEMO-2024-0001,123456789012,DIRECT,GENERAL,false,false,false,2024-25,1,2024-08-01\n" +
-        "DEMO-2024-0001,123456789012,DIRECT,GENERAL,false,false,false,2024-25,1,2024-08-01\n"
-      )
-    };
-
-    function showToast(msg, type = 'info') {
-      const t = document.getElementById("toast");
-      t.innerText = msg;
-      t.style.display = "flex";
-      t.style.borderColor = type === 'error' ? '#ef4444' : type === 'success' ? '#10b981' : '#3b82f6';
-      setTimeout(() => { t.style.display = "none"; }, 3500);
+    function safeCreateIcons() {
+      try {
+        if (window.lucide && typeof window.lucide.createIcons === "function") {
+          window.lucide.createIcons();
+        }
+      } catch (e) {
+        console.warn("Lucide icons:", e);
+      }
     }
 
     async function init() {
-      // 1. Initial dev token
-      await switchRole("preparer");
-      // 2. Load offerings
+      safeCreateIcons();
       await loadOfferings();
-      // 3. Refresh dashboard metrics
+      await switchRole("preparer");
       await refreshDashboard();
-      // 4. Default preview textarea
-      loadPreset('clean');
     }
 
     async function switchRole(roleKey) {
@@ -750,33 +471,36 @@
         });
         const data = await res.json();
         currentToken = data.access_token;
-        document.getElementById("roleSelector").value = roleKey;
-        document.getElementById("certCurrentSubject").innerText = roleConfig.subject;
-        showToast(`Switched active actor to: ${roleKey.toUpperCase()}`, 'info');
+        const subjEl = document.getElementById("certCurrentSubject");
+        if (subjEl) subjEl.innerText = roleConfig.subject;
+        const selEl = document.getElementById("roleSelector");
+        if (selEl) selEl.value = roleKey;
       } catch (err) {
         console.error("Auth error:", err);
-        showToast("Authentication error occurred", 'error');
       }
     }
 
     function setTab(tabName) {
-      const tabs = ['dashboard', 'ingestion', 'certification', 'review', 'certificates', 'verifier', 'audit'];
+      const tabs = ['dashboard', 'ingestion', 'certification', 'certificates', 'verifier', 'audit'];
       tabs.forEach(t => {
         const btn = document.getElementById(`tab-${t}`);
         const content = document.getElementById(`content-${t}`);
         if (!btn || !content) return;
         if (t === tabName) {
-          btn.classList.add("active");
+          btn.className = "tab-btn px-4 py-2 font-semibold text-sm rounded-lg transition-all flex items-center gap-2 bg-indigo-600 text-white shadow-sm shadow-indigo-500/20";
           content.classList.remove("hidden");
         } else {
-          btn.classList.remove("active");
+          btn.className = "tab-btn px-4 py-2 font-medium text-sm rounded-lg transition-all flex items-center gap-2 text-slate-600 hover:text-slate-900 hover:bg-slate-100";
           content.classList.add("hidden");
         }
       });
+      safeCreateIcons();
 
-      if (tabName === 'dashboard') refreshDashboard();
-      if (tabName === 'review') loadReviewCases();
-      if (tabName === 'audit') refreshAudit();
+      if (tabName === 'dashboard') {
+        refreshDashboard();
+      } else if (tabName === 'audit') {
+        refreshAudit();
+      }
     }
 
     async function loadOfferings() {
@@ -784,13 +508,15 @@
         const res = await fetch("/api/v1/approvals/offerings", {
           headers: { "Authorization": `Bearer ${currentToken}` }
         });
-        allOfferings = await res.json();
-        if (allOfferings.length > 0) {
-          selectedOfferingId = allOfferings[0].id;
-          institutionId = allOfferings[0].institution_id;
+        const offerings = await res.json();
+        if (Array.isArray(offerings) && offerings.length > 0) {
+          selectedOfferingId = offerings[0].id;
+          institutionId = offerings[0].institution_id;
           const selectEl = document.getElementById("uploadOfferingSelect");
-          selectEl.innerHTML = allOfferings.map(o => `<option value="${o.id}">${o.course_name} (${o.level})</option>`).join("");
-          selectEl.onchange = (e) => { selectedOfferingId = e.target.value; };
+          if (selectEl) {
+            selectEl.innerHTML = offerings.map(o => `<option value="${o.id}">${o.course_name} (${o.level})</option>`).join("");
+            selectEl.onchange = (e) => { selectedOfferingId = e.target.value; };
+          }
         }
       } catch (err) {
         console.error("Load offerings error:", err);
@@ -803,47 +529,63 @@
           headers: { "Authorization": `Bearer ${currentToken}` }
         });
         const data = await res.json();
-        document.getElementById("statApproved").innerText = data.total_approved_ordinary;
-        document.getElementById("statReported").innerText = data.total_reported;
-        document.getElementById("statCertified").innerText = data.total_certified;
+        const statApp = document.getElementById("statApproved");
+        if (statApp) statApp.innerText = data.total_approved_ordinary;
+        const statRep = document.getElementById("statReported");
+        if (statRep) statRep.innerText = data.total_reported;
+        const statCert = document.getElementById("statCertified");
+        if (statCert) statCert.innerText = data.total_certified;
 
         const tbody = document.getElementById("offeringsTableBody");
-        tbody.innerHTML = data.offerings.map(o => `
-          <tr>
-            <td style="font-weight: 600; color: #fff;">${o.course_name}</td>
-            <td class="font-mono" style="font-size: 0.75rem; color: #94a3b8;">${o.level}</td>
-            <td style="color: #cbd5e1;">${o.approved_ordinary}</td>
-            <td style="color: #cbd5e1;">${o.approved_supernumerary}</td>
-            <td style="color: #38bdf8; font-weight: 600;">${o.reported_population}</td>
-            <td style="color: #34d399; font-weight: 700;">${o.certified_population}</td>
-            <td>
-              <span class="badge ${o.utilization_percent > 100 ? 'badge-danger' : 'badge-success'}">
-                ${o.utilization_percent}%
-              </span>
-            </td>
-          </tr>
-        `).join("");
+        if (tbody && Array.isArray(data.offerings)) {
+          tbody.innerHTML = data.offerings.map(o => `
+            <tr class="hover:bg-slate-50 transition">
+              <td class="px-5 py-3 font-semibold text-slate-900">${o.course_name}</td>
+              <td class="px-5 py-3 text-slate-500 font-mono text-xs">${o.level}</td>
+              <td class="px-5 py-3 font-medium text-slate-700">${o.approved_ordinary}</td>
+              <td class="px-5 py-3 font-medium text-slate-700">${o.approved_supernumerary}</td>
+              <td class="px-5 py-3 font-medium text-blue-600">${o.reported_population}</td>
+              <td class="px-5 py-3 font-semibold text-emerald-600">${o.certified_population}</td>
+              <td class="px-5 py-3">
+                <span class="inline-flex items-center px-2 py-0.5 rounded text-xs font-semibold ${o.utilization_percent > 100 ? 'bg-red-100 text-red-700' : 'bg-emerald-100 text-emerald-700'}">
+                  ${o.utilization_percent}%
+                </span>
+              </td>
+            </tr>
+          `).join("");
+        }
       } catch (err) {
-        console.error("Dashboard error:", err);
+        console.error("Dashboard refresh error:", err);
       }
     }
 
-    function loadPreset(key) {
-      document.getElementById("csvPreviewTextarea").value = PRESETS[key] || "";
-      showToast(`Loaded '${key}' demo CSV into staging editor`, 'info');
+    function quickFillCsv() {
+      const btn = document.getElementById("quickFillBtn");
+      if (btn) {
+        btn.innerText = "✓ 2 Synthetic Students Loaded in Memory";
+        btn.classList.add("bg-emerald-50", "text-emerald-700", "border-emerald-300");
+      }
     }
 
     async function submitBatch() {
       const btn = document.getElementById("btnSubmitBatch");
-      btn.innerText = "⏳ Staging & Validating...";
+      btn.innerText = "Staging batch...";
       btn.disabled = true;
-
       try {
-        const csvContent = document.getElementById("csvPreviewTextarea").value;
+        const csvContent = (
+          "local_student_id,apaar_id,entry_route,category,is_nri,is_oci,is_fn,admission_cohort,current_study_year,interval_start\n" +
+          "DEMO-2024-0001,123456789012,DIRECT,GENERAL,false,false,false,2024-25,1,2024-08-01\n" +
+          "DEMO-2024-0002,234567890123,DIRECT,SUPERNUMERARY,false,false,true,2024-25,1,2024-08-01\n"
+        );
         const blob = new Blob([csvContent], { type: "text/csv" });
         const formData = new FormData();
-        formData.append("programme_offering_id", selectedOfferingId || allOfferings[0]?.id);
-        formData.append("admission_cohort", document.getElementById("cohortInput").value.trim() || "2024-25");
+        const selEl = document.getElementById("uploadOfferingSelect");
+        const offeringId = (selEl && selEl.value) ? selEl.value : selectedOfferingId;
+        const cohortEl = document.getElementById("cohortInput");
+        const cohort = (cohortEl && cohortEl.value) ? cohortEl.value.trim() : "2024-25";
+
+        formData.append("programme_offering_id", offeringId);
+        formData.append("admission_cohort", cohort);
         formData.append("file", blob, "demo_batch.csv");
 
         const res = await fetch("/api/v1/submissions", {
@@ -851,11 +593,10 @@
           headers: { "Authorization": `Bearer ${currentToken}` },
           body: formData
         });
-
         if (!res.ok) {
-          const errData = await res.json();
-          showToast(`Upload failed: ${errData.detail?.message || res.statusText}`, 'error');
-          btn.innerText = "🚀 Upload, Stage & Run Rules";
+          const err = await res.json();
+          alert(`Upload failed: ${err.detail?.message || res.statusText}`);
+          btn.innerText = "Upload & Stage Submission";
           btn.disabled = false;
           return;
         }
@@ -863,10 +604,8 @@
         const sub = await res.json();
         activeSubmissionId = sub.id;
 
-        document.getElementById("activeSubmissionBadge").className = "badge badge-primary";
         document.getElementById("activeSubmissionBadge").innerText = `Active: ${sub.id.slice(0, 8)}... (${sub.status})`;
         document.getElementById("certSubId").innerText = sub.id;
-        document.getElementById("certSubStatus").className = "badge badge-warning";
         document.getElementById("certSubStatus").innerText = sub.status;
         document.getElementById("certMaker").innerText = sub.created_by;
 
@@ -877,56 +616,46 @@
         });
         const valData = await valRes.json();
 
-        document.getElementById("validationResultSummary").innerHTML = `
-          <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 0.35rem;">
-            <strong style="color: #34d399;">✔ Validation Run Completed</strong>
-            <span class="badge ${valData.blocking_findings > 0 ? 'badge-danger' : 'badge-success'}">
-              ${valData.total_findings} Findings (${valData.blocking_findings} Blocking)
-            </span>
+        document.getElementById("validationResultBox").innerHTML = `
+          <div class="flex items-center justify-between font-bold text-emerald-700">
+            <span>Validation Completed</span>
+            <span>Total Findings: ${valData.total_findings} (${valData.blocking_findings} Blocking)</span>
           </div>
-          <p style="color: #94a3b8; font-size: 0.75rem;">Status: <strong style="color: #fff;">READY_FOR_CERTIFICATION</strong> (Maker/Checker Gate Ready)</p>
+          <p class="text-slate-600 mt-1">Submission status transitioned to: <strong class="text-slate-900">READY_FOR_CERTIFICATION</strong></p>
         `;
         document.getElementById("certSubStatus").innerText = "READY_FOR_CERTIFICATION";
-        document.getElementById("certSubStatus").className = "badge badge-primary";
 
-        // Fetch findings list
-        const fRes = await fetch(`/api/v1/validation/runs/${valData.id}/findings`, {
+        // Fetch findings
+        const findingsRes = await fetch(`/api/v1/validation/runs/${valData.id}/findings`, {
           headers: { "Authorization": `Bearer ${currentToken}` }
         });
-        const findings = await fRes.json();
-        document.getElementById("findingsContainer").innerHTML = findings.map(f => `
-          <div style="background: #0f172a; padding: 0.6rem 0.85rem; border-radius: 0.5rem; border: 1px solid #1e293b; display: flex; align-items: center; justify-content: space-between; font-size: 0.75rem;">
-            <div>
-              <span class="font-mono" style="font-weight: 700; color: #818cf8;">${f.rule_id}</span>
-              <span style="color: #cbd5e1; margin-left: 0.5rem;">${f.expected_condition || 'Rule evaluation'}</span>
-            </div>
-            <span class="badge ${f.outcome === 'PASS' ? 'badge-success' : 'badge-warning'}">${f.outcome}</span>
+        const findings = await findingsRes.json();
+        document.getElementById("findingsList").innerHTML = findings.map(f => `
+          <div class="p-2.5 rounded-lg border text-xs flex items-center justify-between ${f.outcome === 'PASS' ? 'bg-emerald-50 border-emerald-200 text-emerald-800' : 'bg-amber-50 border-amber-200 text-amber-800'}">
+            <span class="font-mono font-bold">${f.rule_id}</span>
+            <span>${f.expected_condition || 'Format check'}</span>
+            <span class="font-bold">${f.outcome}</span>
           </div>
         `).join("");
 
-        showToast("Batch staged & evaluated successfully!", 'success');
-        refreshDashboard();
+        btn.innerText = "✓ Staged & Validated!";
+        await refreshDashboard();
       } catch (err) {
-        console.error("Submit error:", err);
-        showToast("Error staging batch", 'error');
+        console.error("Submit batch error:", err);
+        btn.innerText = "Upload & Stage Submission";
       } finally {
-        btn.innerText = "🚀 Upload, Stage & Run Rules";
         btn.disabled = false;
       }
     }
 
-    async function testMakerSelfApproval() {
+    async function attemptCertification() {
       const fb = document.getElementById("certificationFeedback");
       fb.classList.remove("hidden");
-
       if (!activeSubmissionId) {
-        fb.className = "card badge-danger";
-        fb.innerHTML = "<strong>Please stage a batch first in 'Upload & Staging Studio'!</strong>";
+        fb.className = "p-4 rounded-xl text-xs bg-red-50 text-red-700 border border-red-200";
+        fb.innerText = "Please stage a submission first in the 'Upload & Validation' tab!";
         return;
       }
-
-      // Ensure we are calling with Maker's token
-      await switchRole("preparer");
 
       try {
         const res = await fetch(`/api/v1/validation/submissions/${activeSubmissionId}/certify`, {
@@ -936,141 +665,29 @@
         const data = await res.json();
 
         if (res.status === 403) {
-          fb.style.background = "rgba(239, 68, 68, 0.15)";
-          fb.style.border = "1px solid rgba(239, 68, 68, 0.4)";
-          fb.style.color = "#f87171";
+          fb.className = "p-4 rounded-xl text-xs bg-red-50 text-red-700 border border-red-200 space-y-1";
           fb.innerHTML = `
-            <strong style="display: block; font-size: 0.9rem; margin-bottom: 0.25rem;">❌ SELF_APPROVAL_DENIED (Rule Enforced)</strong>
-            <p>${data.detail?.message || "Preparer cannot certify their own submission."}</p>
-            <span class="font-mono" style="font-size: 0.7rem; color: #fca5a5; display: block; margin-top: 0.35rem;">Error: ${data.detail?.error_code || '403 Forbidden'}</span>
+            <strong class="font-bold block text-sm">❌ Certification Rejected: Maker/Checker Rule Violation</strong>
+            <p>${data.detail?.message || "A preparer cannot certify their own submission."}</p>
+            <p class="text-[11px] text-red-600 font-mono mt-1">Error code: ${data.detail?.error_code || 'SELF_APPROVAL_DENIED'}</p>
+            <div class="mt-2 pt-2 border-t border-red-200 text-[11px] text-slate-700">
+              👉 <strong>To Approve:</strong> Select <strong>'Certifier (Institution 1)'</strong> in the top-right header role selector, then click this button again!
+            </div>
           `;
-          showToast("Maker/Checker denial correctly verified!", 'error');
-        } else {
-          fb.innerText = JSON.stringify(data);
-        }
-      } catch (err) {
-        console.error("Maker test error:", err);
-      }
-    }
-
-    async function testAuthorizedCertification() {
-      const fb = document.getElementById("certificationFeedback");
-      fb.classList.remove("hidden");
-
-      if (!activeSubmissionId) {
-        fb.className = "card badge-danger";
-        fb.innerHTML = "<strong>Please stage a batch first in 'Upload & Staging Studio'!</strong>";
-        return;
-      }
-
-      // Switch to independent Certifier
-      await switchRole("certifier");
-
-      try {
-        const res = await fetch(`/api/v1/validation/submissions/${activeSubmissionId}/certify`, {
-          method: "POST",
-          headers: { "Authorization": `Bearer ${currentToken}` }
-        });
-        const data = await res.json();
-
-        if (res.ok) {
-          fb.style.background = "rgba(16, 185, 129, 0.15)";
-          fb.style.border = "1px solid rgba(16, 185, 129, 0.4)";
-          fb.style.color = "#34d399";
+        } else if (res.status === 200) {
+          fb.className = "p-4 rounded-xl text-xs bg-emerald-50 text-emerald-700 border border-emerald-200 space-y-1";
           fb.innerHTML = `
-            <strong style="display: block; font-size: 0.9rem; margin-bottom: 0.25rem;">✅ Quality Certification Succeeded!</strong>
-            <p>Snapshot version <strong>${data.certified_version}</strong> locked and committed by independent checker <strong>${data.certified_by}</strong>.</p>
-            <span class="badge badge-success" style="margin-top: 0.5rem;">STATUS: CERTIFIED</span>
+            <strong class="font-bold block text-sm">✅ Certification Succeeded!</strong>
+            <p>Snapshot version ${data.certified_version} locked and committed by ${data.certified_by}.</p>
           `;
-          document.getElementById("certSubStatus").className = "badge badge-success";
           document.getElementById("certSubStatus").innerText = "CERTIFIED";
-          showToast("Submission successfully certified & locked!", 'success');
-          refreshDashboard();
+          await refreshDashboard();
         } else {
-          fb.style.background = "rgba(245, 158, 11, 0.15)";
-          fb.style.border = "1px solid rgba(245, 158, 11, 0.4)";
-          fb.style.color = "#fbbf24";
-          fb.innerText = data.detail?.message || JSON.stringify(data);
+          fb.className = "p-4 rounded-xl text-xs bg-amber-50 text-amber-700 border border-amber-200";
+          fb.innerText = data.detail ? data.detail.message : JSON.stringify(data);
         }
       } catch (err) {
-        console.error("Certify error:", err);
-      }
-    }
-
-    async function triggerOverlapScan() {
-      if (!activeSubmissionId) {
-        showToast("Please stage a batch first to scan for overlaps!", 'warning');
-        return;
-      }
-      try {
-        const res = await fetch(`/api/v1/review/submissions/${activeSubmissionId}/check-overlaps`, {
-          method: "POST",
-          headers: { "Authorization": `Bearer ${currentToken}` }
-        });
-        const cases = await res.json();
-        showToast(`Scan complete: ${cases.length} overlap review case(s) found.`, 'info');
-        loadReviewCases();
-      } catch (err) {
-        console.error("Overlap scan error:", err);
-      }
-    }
-
-    async function loadReviewCases() {
-      try {
-        const res = await fetch("/api/v1/review/cases", {
-          headers: { "Authorization": `Bearer ${currentToken}` }
-        });
-        const cases = await res.json();
-        const tbody = document.getElementById("reviewCasesTableBody");
-        if (cases.length === 0) {
-          tbody.innerHTML = `<tr><td colspan="7" style="text-align: center; color: #64748b; padding: 2rem;">No active review cases recorded yet.</td></tr>`;
-          return;
-        }
-        tbody.innerHTML = cases.map(c => `
-          <tr>
-            <td class="font-mono" style="font-size: 0.72rem; color: #818cf8;">${c.id.slice(0, 8)}...</td>
-            <td><span class="badge badge-warning">${c.case_type}</span></td>
-            <td><span class="badge ${c.status === 'RESOLVED' ? 'badge-success' : 'badge-danger'}">${c.status}</span></td>
-            <td class="font-mono" style="font-size: 0.72rem; color: #94a3b8;">${c.opened_by}</td>
-            <td style="font-size: 0.72rem; color: #64748b;">${c.opened_at.slice(0, 10)}</td>
-            <td style="font-size: 0.75rem; color: #cbd5e1;">${c.resolution_explanation || '<span style="color:#64748b; font-style:italic;">Awaiting decision</span>'}</td>
-            <td>
-              ${c.status === 'OPEN' ? `
-                <button onclick="recordCaseDecision('${c.id}', 'RESOLVED')" class="btn btn-success" style="font-size: 0.68rem; padding: 0.25rem 0.5rem;">Resolve</button>
-                <button onclick="recordCaseDecision('${c.id}', 'DISMISSED')" class="btn btn-secondary" style="font-size: 0.68rem; padding: 0.25rem 0.5rem; margin-left: 0.25rem;">Dismiss</button>
-              ` : `
-                <button onclick="recordCaseDecision('${c.id}', 'REOPENED')" class="btn btn-danger" style="font-size: 0.68rem; padding: 0.25rem 0.5rem;">Reopen</button>
-              `}
-            </td>
-          </tr>
-        `).join("");
-      } catch (err) {
-        console.error("Load cases error:", err);
-      }
-    }
-
-    async function recordCaseDecision(caseId, decision) {
-      const explanation = prompt(`Enter accountable review explanation for ${decision}:`, `Verified compliance with institutional regulations.`);
-      if (!explanation) return;
-
-      try {
-        const res = await fetch(`/api/v1/review/cases/${caseId}/decisions`, {
-          method: "POST",
-          headers: {
-            "Authorization": `Bearer ${currentToken}`,
-            "Content-Type": "application/json"
-          },
-          body: JSON.stringify({ decision, explanation })
-        });
-        if (res.ok) {
-          showToast(`Case marked as ${decision}`, 'success');
-          loadReviewCases();
-        } else {
-          const err = await res.json();
-          showToast(`Decision rejected: ${err.detail?.message}`, 'error');
-        }
-      } catch (err) {
-        console.error("Decision error:", err);
+        console.error("Certification attempt error:", err);
       }
     }
 
@@ -1085,24 +702,25 @@
           body: JSON.stringify({
             submission_id: activeSubmissionId,
             record_type: "ENROLMENT_ATTESTATION",
-            purpose: "EMPLOYMENT_VERIFICATION"
+            purpose: "EMPLOYMENT_VERIFICATION",
+            expires_in_days: 30
           })
         });
         const data = await res.json();
         document.getElementById("attestationTokenInput").value = data.signed_bytes;
-        showToast("Issued fresh JWS signed attestation token!", 'success');
       } catch (err) {
-        console.error("Token issue error:", err);
-        showToast("Error issuing token", 'error');
+        console.error("Generate token error:", err);
       }
     }
 
     async function verifyToken() {
-      const token = document.getElementById("attestationTokenInput").value.trim();
+      let token = document.getElementById("attestationTokenInput").value.trim();
       if (!token) {
-        showToast("Please enter or generate a token first!", 'warning');
-        return;
+        await generateFreshToken();
+        token = document.getElementById("attestationTokenInput").value.trim();
       }
+      if (!token) return;
+
       try {
         const res = await fetch("/api/v1/attestations/verify", {
           method: "POST",
@@ -1113,14 +731,13 @@
         const box = document.getElementById("verifierResultsBox");
         box.classList.remove("hidden");
 
-        document.getElementById("verifStructure").innerText = v.structure_valid ? "✔ Structure: Valid Compact JWS" : "❌ Structure: Invalid";
-        document.getElementById("verifSignature").innerText = v.signature_valid ? "✔ Digital Signature: Verified" : "❌ Signature: Invalid";
-        document.getElementById("verifIssuer").innerText = v.issuer_trusted ? "✔ Issuer Trust: Trusted (apaar-core-platform)" : "❌ Issuer: Unknown";
-        document.getElementById("verifTime").innerText = v.time_valid ? "✔ Time Validity: Valid (Not Expired)" : "❌ Expired";
-        document.getElementById("verifStatus").innerText = `✔ Revocation Status: ${v.status}`;
-        showToast("Token verified successfully!", 'success');
+        document.getElementById("checkStructure").className = `p-2.5 rounded-lg bg-white border flex items-center gap-2 ${v.structure_valid ? 'border-emerald-300 text-emerald-700' : 'border-red-300 text-red-700'}`;
+        document.getElementById("checkSignature").className = `p-2.5 rounded-lg bg-white border flex items-center gap-2 ${v.signature_valid ? 'border-emerald-300 text-emerald-700' : 'border-red-300 text-red-700'}`;
+        document.getElementById("checkIssuer").className = `p-2.5 rounded-lg bg-white border flex items-center gap-2 ${v.issuer_trusted ? 'border-emerald-300 text-emerald-700' : 'border-red-300 text-red-700'}`;
+        document.getElementById("checkStatus").className = `p-2.5 rounded-lg bg-white border flex items-center gap-2 ${v.is_valid ? 'border-emerald-300 text-emerald-700' : 'border-red-300 text-red-700'}`;
+        document.getElementById("checkStatus").innerHTML = `<span>Status: ${v.status}</span>`;
       } catch (err) {
-        console.error("Verify error:", err);
+        console.error("Verify token error:", err);
       }
     }
 
@@ -1131,51 +748,24 @@
         });
         const audits = await res.json();
         const tbody = document.getElementById("auditTableBody");
-        if (audits.length === 0) {
-          tbody.innerHTML = `<tr><td colspan="6" style="text-align: center; color: #64748b; padding: 2rem;">No audit events recorded yet.</td></tr>`;
-          return;
+        if (tbody && Array.isArray(audits)) {
+          tbody.innerHTML = audits.map(a => `
+            <tr class="hover:bg-slate-50 transition">
+              <td class="px-5 py-2.5 text-slate-500">${a.timestamp.slice(0, 19).replace('T', ' ')}</td>
+              <td class="px-5 py-2.5 text-slate-700">${a.principal}</td>
+              <td class="px-5 py-2.5 font-bold text-indigo-600">${a.action}</td>
+              <td class="px-5 py-2.5 text-slate-600">${a.object_type}</td>
+              <td class="px-5 py-2.5 text-emerald-600 font-semibold">${a.outcome}</td>
+              <td class="px-5 py-2.5 text-slate-500">${a.purpose || '-'}</td>
+            </tr>
+          `).join("");
         }
-        tbody.innerHTML = audits.map(a => `
-          <tr>
-            <td class="font-mono" style="font-size: 0.72rem; color: #94a3b8;">${a.timestamp.slice(0, 19).replace('T', ' ')}</td>
-            <td class="font-mono" style="font-size: 0.72rem; color: #cbd5e1;">${a.principal}</td>
-            <td><strong style="color: #818cf8;">${a.action}</strong></td>
-            <td style="color: #94a3b8;">${a.object_type}</td>
-            <td><span class="badge badge-success">${a.outcome}</span></td>
-            <td style="font-size: 0.75rem; color: #64748b;">${a.purpose || '-'}</td>
-          </tr>
-        `).join("");
       } catch (err) {
-        console.error("Audit error:", err);
-      }
-    }
-
-    // Guide Step Automation
-    async function runGuideStep(stepNum) {
-      document.querySelectorAll(".guide-btn").forEach((b, idx) => {
-        b.classList.toggle("active", idx + 1 === stepNum);
-      });
-
-      if (stepNum === 1) {
-        setTab("ingestion");
-        loadPreset("clean");
-        await submitBatch();
-      } else if (stepNum === 2) {
-        setTab("ingestion");
-        showToast("Viewing evaluated rules VR-001 through VR-014", "info");
-      } else if (stepNum === 3) {
-        setTab("certification");
-        await testMakerSelfApproval();
-      } else if (stepNum === 4) {
-        setTab("review");
-        await triggerOverlapScan();
-      } else if (stepNum === 5) {
-        setTab("certificates");
-        showToast("Displaying Verifiable Dual-Identifier Certificate", "info");
+        console.error("Audit refresh error:", err);
       }
     }
 
     window.addEventListener("DOMContentLoaded", init);
-  </script>
+</script>
 </body>
 </html>

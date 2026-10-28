@@ -1,0 +1,206 @@
+"""Demo-only rule bundle for APAAR Core validation.
+
+IMPORTANT: This bundle has authority_status = DEMO_ONLY.
+These rules are not authoritative AICTE regulations. Capacity parameters
+are arithmetic examples only — not official percentages, approvals or
+admission permissions.
+
+Rule bundle version: 1.0.0
+Source: Project specification (demo policy section)
+Reviewed: Synthetic demo only — no regulatory sign-off
+"""
+
+bundle:
+  code: "DEMO-BUNDLE-001"
+  display_name: "Demo Validation Bundle v1 (SYNTHETIC)"
+  version: "1.0.0"
+  authority_status: "DEMO_ONLY"
+  description: >
+    Arithmetic demonstration bundle for the APAAR Core prototype.
+    NOT authoritative AICTE regulation. Capacity parameters are
+    invented examples only. Use PRIMARY_REVIEWED bundles when
+    applicable regulatory evidence is established.
+
+rules:
+  - id: "VR-001"
+    version: "1.0.0"
+    name: "APAAR Shape Validation"
+    description: >
+      Validate that APAAR is exactly 12 numeric digits.
+      This is FORMAT ONLY — not registry verification.
+    evaluator: "rule_apaar_shape"
+    severity: "ERROR"
+    is_blocking: true
+    applicability: "ALL_ROWS"
+    required_inputs:
+      - "apaar_id"
+    remediation: "Correct APAAR to exactly 12 numeric digits."
+
+  - id: "VR-002"
+    version: "1.0.0"
+    name: "Local Student ID Present"
+    description: "Local student ID must be present and non-empty."
+    evaluator: "rule_local_student_id_present"
+    severity: "ERROR"
+    is_blocking: true
+    applicability: "ALL_ROWS"
+    required_inputs:
+      - "local_student_id"
+    remediation: "Provide the institution's internal student ID."
+
+  - id: "VR-003"
+    version: "1.0.0"
+    name: "Within-File Duplicate Local ID"
+    description: "Local student ID must be unique within a single submission."
+    evaluator: "rule_within_file_duplicate_local_id"
+    severity: "ERROR"
+    is_blocking: true
+    applicability: "ALL_ROWS"
+    required_inputs:
+      - "local_student_id"
+    remediation: "Remove duplicate rows or correct the student ID."
+
+  - id: "VR-004"
+    version: "1.0.0"
+    name: "Within-File Duplicate APAAR"
+    description: "APAAR must appear at most once per submission."
+    evaluator: "rule_within_file_duplicate_apaar"
+    severity: "ERROR"
+    is_blocking: true
+    applicability: "SHAPE_VALID_ROWS"
+    required_inputs:
+      - "apaar_id"
+    remediation: "A student should appear only once in a submission."
+
+  - id: "VR-005"
+    version: "1.0.0"
+    name: "Entry Route Valid"
+    description: "Entry route must be a recognized value."
+    evaluator: "rule_entry_route_valid"
+    severity: "ERROR"
+    is_blocking: true
+    applicability: "ALL_ROWS"
+    required_inputs:
+      - "entry_route"
+    allowed_values:
+      - "DIRECT"
+      - "LATERAL"
+      - "TRANSFER"
+      - "READMISSION"
+
+  - id: "VR-006"
+    version: "1.0.0"
+    name: "Student Category Valid"
+    description: "Student category must be a recognized value."
+    evaluator: "rule_category_valid"
+    severity: "ERROR"
+    is_blocking: true
+    applicability: "ALL_ROWS"
+    required_inputs:
+      - "category"
+
+  - id: "VR-007"
+    version: "1.0.0"
+    name: "Interval Start Date Format"
+    description: "interval_start must be a valid ISO 8601 date (YYYY-MM-DD)."
+    evaluator: "rule_date_format"
+    severity: "ERROR"
+    is_blocking: true
+    applicability: "ALL_ROWS"
+    required_inputs:
+      - "interval_start"
+
+  - id: "VR-008"
+    version: "1.0.0"
+    name: "Interval End Date Format"
+    description: "interval_end must be a valid ISO 8601 date when present."
+    evaluator: "rule_date_format"
+    severity: "ERROR"
+    is_blocking: true
+    applicability: "ROWS_WITH_INTERVAL_END"
+    required_inputs:
+      - "interval_end"
+
+  - id: "VR-009"
+    version: "1.0.0"
+    name: "Mock Provider Outcome"
+    description: >
+      Apply mock APAAR provider outcome. MOCK_MATCH passes.
+      MOCK_NOT_FOUND and MOCK_MISMATCH block certification.
+      MOCK_UNAVAILABLE and NOT_CHECKED require review.
+      This is a demo policy matrix — not a national admission rule.
+    evaluator: "rule_provider_outcome"
+    severity: "ERROR"
+    is_blocking: true
+    applicability: "SHAPE_VALID_ROWS"
+    required_inputs:
+      - "apaar_id"
+      - "provider_outcome"
+
+  - id: "VR-010"
+    version: "1.0.0"
+    name: "Ordinary Pool Capacity (Demo)"
+    description: >
+      DEMO ONLY: Ordinary admissions must not exceed approved ordinary capacity.
+      Parameters are arithmetic examples (60 ordinary) — not official AICTE figures.
+      authority_status: DEMO_ONLY — no regulatory enforcement.
+    evaluator: "rule_capacity_check"
+    severity: "WARNING"
+    is_blocking: false
+    applicability: "SUBMISSION_LEVEL"
+    authority_status: "DEMO_ONLY"
+    parameters:
+      pool: "ORDINARY"
+      note: "Demo example: 60 ordinary seats. Not official AICTE capacity."
+
+  - id: "VR-011"
+    version: "1.0.0"
+    name: "Supernumerary Pool Capacity (Demo)"
+    description: >
+      DEMO ONLY: Supernumerary admissions must not exceed approved supernumerary capacity.
+      Parameters are arithmetic examples (6 supernumerary) — not official AICTE figures.
+    evaluator: "rule_capacity_check"
+    severity: "WARNING"
+    is_blocking: false
+    applicability: "SUBMISSION_LEVEL"
+    authority_status: "DEMO_ONLY"
+    parameters:
+      pool: "SUPERNUMERARY"
+      note: "Demo example: 6 supernumerary seats. Not official AICTE capacity."
+
+  - id: "VR-012"
+    version: "1.0.0"
+    name: "NRI Pool Capacity (Demo)"
+    description: >
+      DEMO ONLY: NRI admissions must not exceed approved NRI capacity when applicable.
+    evaluator: "rule_capacity_check"
+    severity: "WARNING"
+    is_blocking: false
+    applicability: "SUBMISSION_LEVEL_WITH_NRI"
+    authority_status: "DEMO_ONLY"
+    parameters:
+      pool: "NRI"
+
+  - id: "VR-013"
+    version: "1.0.0"
+    name: "Study Year Valid"
+    description: "Current study year must be between 1 and 6."
+    evaluator: "rule_study_year_valid"
+    severity: "ERROR"
+    is_blocking: true
+    applicability: "ALL_ROWS"
+    required_inputs:
+      - "current_study_year"
+
+  - id: "VR-014"
+    version: "1.0.0"
+    name: "Interval Date Order"
+    description: "interval_end must be after interval_start when both are present."
+    evaluator: "rule_interval_order"
+    severity: "ERROR"
+    is_blocking: true
+    applicability: "ROWS_WITH_INTERVAL_END"
+    required_inputs:
+      - "interval_start"
+      - "interval_end"
+

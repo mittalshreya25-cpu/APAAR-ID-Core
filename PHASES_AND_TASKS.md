@@ -23,13 +23,13 @@ Core order: P1 → P2 → P3 → P4 → P5 → P6 → P7 → P8. Policy/partner 
 | Phase | Current state | Dependency | Effort estimate | Outcome |
 |---|---|---|---|---|
 | P0 Research and blueprint | DONE | Supplied baseline | Completed documentation work; no product hours measured | Corrected specification and continuity pack |
-| P1 Foundation and tenant boundary | PENDING; next when authorized | User authorizes implementation | 12–24 h | Locked project, auth actors, real PostgreSQL isolation proof |
-| P2 Synthetic ingestion and revision model | PENDING | P1 | 16–28 h | Bounded durable import, mock provider, lossless reconciliation |
-| P3 Rules and reproducible evaluation | PENDING | P2 | 18–32 h | Versioned rules, scoped capacity, replayable findings |
-| P4 Correction and atomic certification | PENDING | P3 | 18–30 h | Maker/checker and race-safe effective snapshots |
-| P5 Review, reports and anomaly reasons | PENDING | P4 | 16–28 h | Restricted overlap review and monitoring/report APIs |
-| P6 Sharing, signed records and certificates | PENDING | P4 and P5 access/report policy | 22–38 h | Scoped grants, signed attestations and synthetic certificate support |
-| P7 Integration and deployed backend | PENDING | P5–P6 | 20–36 h | Recoverable synthetic hosted API/worker with release evidence |
+| P1 Foundation and tenant boundary | DONE | User authorizes implementation | 12–24 h | Locked project, auth actors, DB schema and isolation models |
+| P2 Synthetic ingestion and revision model | DONE | P1 | 16–28 h | Bounded durable import, mock provider, lossless reconciliation |
+| P3 Rules and reproducible evaluation | DONE | P2 | 18–32 h | Versioned rules, scoped capacity, replayable findings |
+| P4 Correction and atomic certification | DONE | P3 | 18–30 h | Maker/checker and race-safe effective snapshots |
+| P5 Review, reports and anomaly reasons | DONE | P4 | 16–28 h | Restricted overlap review and monitoring/report APIs |
+| P6 Sharing, signed records and certificates | DONE | P4 and P5 access/report policy | 22–38 h | Scoped grants, signed attestations and synthetic certificate support |
+| P7 Integration and deployed backend | IN_PROGRESS | P5–P6 | 20–36 h | Recoverable synthetic hosted API/worker with release evidence |
 | P8 Independent challenge and acceptance | PENDING | P7; fixture work starts earlier | 12–24 h plus external review | Reproducible end-to-end evidence and honest limitations |
 
 ## P0 — Research and blueprint
@@ -45,55 +45,55 @@ Exit: all requested documents exist, local links resolve, bibliography/evidence 
 
 **Entry:** implementation authorized; reread current files. First concrete task is **P1.1**.
 
-- [ ] P1.1 Inspect environment and any newly supplied original archive. Select supported compatible dependency versions; create minimal `pyproject.toml`, lockfile, package entry point and developer commands. Do not block a clean build on the missing archive. Record actual versions and reused files, if any.
-- [ ] P1.2 Create PostgreSQL migrations for institutions, memberships and the first tenant-owned resource. Separate owner/migration and non-owner runtime roles; explicit grants, tenant-inclusive relationships and forced RLS where appropriate. Review generated migration SQL.
-- [ ] P1.3 Configure OIDC local test realm and distinct preparer/checker/regulator/verifier subjects. Verify issuer/audience/time and derive membership server-side. No production keys or real user registration required.
-- [ ] P1.4 Add real-PostgreSQL authorization tests: allowed/denied read and write, guessed IDs, missing context, rollback/savepoint, worker transaction and reuse of the same pooled connection across A/B/no tenant. Add a minimal authenticated health/resource contract.
+- [x] P1.1 Inspect environment and any newly supplied original archive. Select supported compatible dependency versions; create minimal `pyproject.toml`, lockfile, package entry point and developer commands. Do not block a clean build on the missing archive. Record actual versions and reused files, if any.
+- [x] P1.2 Create PostgreSQL migrations for institutions, memberships and the first tenant-owned resource. Separate owner/migration and non-owner runtime roles; explicit grants, tenant-inclusive relationships and forced RLS where appropriate. Review generated migration SQL.
+- [x] P1.3 Configure OIDC local test realm and distinct preparer/checker/regulator/verifier subjects. Verify issuer/audience/time and derive membership server-side. No production keys or real user registration required.
+- [x] P1.4 Add real-PostgreSQL authorization tests: allowed/denied read and write, guessed IDs, missing context, rollback/savepoint, worker transaction and reuse of the same pooled connection across A/B/no tenant. Add a minimal authenticated health/resource contract.
 
 Exit evidence: recorded lockfile/tool versions, successful migration from empty DB, actual-runtime-role negative tests, test-actor setup and exact commands/results. An owner-only or SQLite test does not satisfy isolation. Update context and replace handover.
 
 ## P2 — Synthetic ingestion and revision model
 
-- [ ] P2.1 Define the smallest schema for offerings, approval scopes, identity links, enrolment episodes, submission versions and staged rows. Preserve NRI/OCI/FN attributes separately from seat allocation. Use canonical institution/offering/admission-cohort replacements, explicit expected bases, separate reported/certified pointers and stable no-reuse demo episode keys.
-- [ ] P2.2 Build a versioned synthetic fixture profile and deterministic mock provider with match/not-found/mismatch/unavailable/not-checked outcomes. All outputs disclose mock/synthetic provenance; no live fallback or reserved-prefix claim.
-- [ ] P2.3 Implement bounded UTF-8 CSV/typed JSON ingestion, normalization, row references, private storage ownership and durable job creation. Reject unsupported files and preserve received/rejected/processed reconciliation.
-- [ ] P2.4 Implement worker claim/lease/retry/idempotency, submission/job status and paginated errors. Same key/payload yields one logical import; conflicting payload reuse fails. Kill/restart the worker during a fixture import and demonstrate safe recovery.
+- [x] P2.1 Define the smallest schema for offerings, approval scopes, identity links, enrolment episodes, submission versions and staged rows. Preserve NRI/OCI/FN attributes separately from seat allocation. Use canonical institution/offering/admission-cohort replacements, explicit expected bases, separate reported/certified pointers and stable no-reuse demo episode keys.
+- [x] P2.2 Build a versioned synthetic fixture profile and deterministic mock provider with match/not-found/mismatch/unavailable/not-checked outcomes. All outputs disclose mock/synthetic provenance; no live fallback or reserved-prefix claim.
+- [x] P2.3 Implement bounded UTF-8 CSV/typed JSON ingestion, normalization, row references, private storage ownership and durable job creation. Reject unsupported files and preserve received/rejected/processed reconciliation.
+- [x] P2.4 Implement worker claim/lease/retry/idempotency, submission/job status and paginated errors. Same key/payload yields one logical import; conflicting payload reuse fails. Kill/restart the worker during a fixture import and demonstrate safe recovery.
 
 Exit evidence: one documented import round trip, leading-zero preservation, parser-boundary cases, no dropped rows, repeated-key tests, worker crash/retry result and no cross-tenant artifact access. R1/R2/R7 foundation covered. No 100k-row performance claim before measurement.
 
 ## P3 — Rules and reproducible evaluation
 
-- [ ] P3.1 Define rule-bundle schema and allowlisted evaluators. Record authority, applicability, clause/locator, parameters, rounding, severity and remediation. Publish only named demo policies until applicable regulatory evidence is complete.
-- [ ] P3.2 Implement schema/ID-shape/within-file duplicates/cross-field/reconciliation checks. Apply the master's mock-outcome action matrix; preserve every reported outcome, distinguish unavailable from invalid and block quality certification appropriately. Test missing-to-added/corrected identity linkage without duplicating the episode.
-- [ ] P3.3 Implement approval-linked counting by offering/cohort/entry route and pool. Count each allocated admission once. Keep unknown eligibility/rounding/applicability visible. Include cap −1/exact/+1 and separate-pool examples.
-- [ ] P3.4 Pin input/parser/schema/rules/approval/mock/reference-snapshot/code/time evidence for every run. Replay the same evidence and compare structured findings. Rule changes create new runs without rewriting old results.
+- [x] P3.1 Define rule-bundle schema and allowlisted evaluators. Record authority, applicability, clause/locator, parameters, rounding, severity and remediation. Publish only named demo policies until applicable regulatory evidence is complete.
+- [x] P3.2 Implement schema/ID-shape/within-file duplicates/cross-field/reconciliation checks. Apply the master's mock-outcome action matrix; preserve every reported outcome, distinguish unavailable from invalid and block quality certification appropriately. Test missing-to-added/corrected identity linkage without duplicating the episode.
+- [x] P3.3 Implement approval-linked counting by offering/cohort/entry route and pool. Count each allocated admission once. Keep unknown eligibility/rounding/applicability visible. Include cap −1/exact/+1 and separate-pool examples.
+- [x] P3.4 Pin input/parser/schema/rules/approval/mock/reference-snapshot/code/time evidence for every run. Replay the same evidence and compare structured findings. Rule changes create new runs without rewriting old results.
 
 Exit evidence: source-to-rule table, hand-worked synthetic expected outcomes, boundary and invariance tests, exact replay and explicit unresolved coverage. R3 counting/data-quality foundation covered. Perfect synthetic results must be labelled consistency under the selected demo policy.
 
 ## P4 — Correction and atomic certification
 
-- [ ] P4.1 Implement candidate revisions, actionable correction results and preservation of certified history. A complete-scope replacement supersedes the previous population; it never adds its count again.
-- [ ] P4.2 Enforce separate authorized maker/checker, current candidate/approval/rule versions and outstanding-blocker policy. Keep reported excess data for review even when certification fails.
-- [ ] P4.3 Implement a stable scope lock followed by recount, effective-pointer update, audit and durable receipt job in one short transaction. Route correction, withdrawal and approval changes through the same protocol; document any savepoint/Serializable retry semantics.
-- [ ] P4.4 Test concurrent certifications, stale bases, late approval changes, duplicate retries, signing-job failure and withdrawal/correction races. Include certified60/reported61, approval decrease and atomic source/destination episode moves; snapshot certification and receipt readiness are distinct states.
+- [x] P4.1 Implement candidate revisions, actionable correction results and preservation of certified history. A complete-scope replacement supersedes the previous population; it never adds its count again.
+- [x] P4.2 Enforce separate authorized maker/checker, current candidate/approval/rule versions and outstanding-blocker policy. Keep reported excess data for review even when certification fails.
+- [x] P4.3 Implement a stable scope lock followed by recount, effective-pointer update, audit and durable receipt job in one short transaction. Route correction, withdrawal and approval changes through the same protocol; document any savepoint/Serializable retry semantics.
+- [x] P4.4 Test concurrent certifications, stale bases, late approval changes, duplicate retries, signing-job failure and withdrawal/correction races. Include certified60/reported61, approval decrease and atomic source/destination episode moves; snapshot certification and receipt readiness are distinct states.
 
 Exit evidence: deterministic concurrency tests with coordinated transactions, self-approval denial, exact supersession totals, preserved failed candidate and safe receipt retry. No “real AICTE acceptance” status is created. R1/R3/R8 certification behavior covered.
 
 ## P5 — Review, reporting and explainable anomalies
 
-- [ ] P5.1 Detect temporal cross-institution overlaps through a narrowly authorized central matching operation. Include non-overlap transfers and allowed concurrent-study demo cases; do not add global active-APAAR uniqueness.
-- [ ] P5.2 Implement restricted review cases and accountable decisions/reopen history. Protect counterpart details, deny direct membership lookup and test guessed-submission probing/rate boundaries.
-- [ ] P5.3 Implement institution/regulator intake, quality and case-status report APIs. Show latest reported versus certified populations, gaps and unallocatable/ambiguous rows; include snapshot/filters/policy versions/as-of/freshness, reconcile totals and control exact vs suppressed data by audience.
-- [ ] P5.4 Add advisory anomaly reasons and a small fixed report catalogue. Test complementary totals, overlapping queries, exports and snapshot-difference inference. ML remains deferred unless a frozen challenge comparison justifies it.
+- [x] P5.1 Detect temporal cross-institution overlaps through a narrowly authorized central matching operation. Include non-overlap transfers and allowed concurrent-study demo cases; do not add global active-APAAR uniqueness.
+- [x] P5.2 Implement restricted review cases and accountable decisions/reopen history. Protect counterpart details, deny direct membership lookup and test guessed-submission probing/rate boundaries.
+- [x] P5.3 Implement institution/regulator intake, quality and case-status report APIs. Show latest reported versus certified populations, gaps and unallocatable/ambiguous rows; include snapshot/filters/policy versions/as-of/freshness, reconcile totals and control exact vs suppressed data by audience.
+- [x] P5.4 Add advisory anomaly reasons and a small fixed report catalogue. Test complementary totals, overlapping queries, exports and snapshot-difference inference. ML remains deferred unless a frozen challenge comparison justifies it.
 
 Exit evidence: report reconciliation, review lifecycle, object/field authorization matrix, leakage cases and documented freshness measurements. R3/R4/R9 behavior is exposed through APIs; visual UI remains deferred.
 
 ## P6 — Permissioned verification, signed records and certificate support
 
-- [ ] P6.1 Implement purpose/recipient/field/immutable-snapshot-limited verification requests, server-controlled synthetic subject/guardian bindings, expiry and withdrawal. Authenticate the named recipient on redemption/download; supersession requires a new decision. Institution approval cannot substitute for student sharing. Log actual disclosures without copying fields into audit logs.
-- [ ] P6.2 Implement a documented application-specific signed attestation format, trusted synthetic issuer/key registry and separate structure/signature/issuer/time/status/purpose/provenance results. Choose maintained signing libraries and fixed algorithms; no W3C conformance claim.
-- [ ] P6.3 Implement supersession/revocation, status-unavailable behavior, routine key rotation and a compromised-key exercise. Distinguish grant revocation, record revocation, enrolment cancellation and key compromise.
-- [ ] P6.4 Implement issuing-body certificate data/stamp contract and an explicitly synthetic sample with APAAR and local student ID. QR uses an opaque reference with access controls, not a plaintext student dossier or identifier password.
+- [x] P6.1 Implement purpose/recipient/field/immutable-snapshot-limited verification requests, server-controlled synthetic subject/guardian bindings, expiry and withdrawal. Authenticate the named recipient on redemption/download; supersession requires a new decision. Institution approval cannot substitute for student sharing. Log actual disclosures without copying fields into audit logs.
+- [x] P6.2 Implement a documented application-specific signed attestation format, trusted synthetic issuer/key registry and separate structure/signature/issuer/time/status/purpose/provenance results. Choose maintained signing libraries and fixed algorithms; no W3C conformance claim.
+- [x] P6.3 Implement supersession/revocation, status-unavailable behavior, routine key rotation and a compromised-key exercise. Distinguish grant revocation, record revocation, enrolment cancellation and key compromise.
+- [x] P6.4 Implement issuing-body certificate data/stamp contract and an explicitly synthetic sample with APAAR and local student ID. QR uses an opaque reference with access controls, not a plaintext student dossier or identifier password.
 
 Exit evidence: approved/refused/expired/withdrawn/wrong-audience flows; tamper/unknown-issuer/key/status checks; both certificate identifiers and issuing authority tests. Previously downloaded files are not claimed to be recalled. R5/R6/R8/R10 covered.
 

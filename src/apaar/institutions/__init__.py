@@ -1,0 +1,1 @@
+"""Institutions domain — models package."""

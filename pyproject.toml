@@ -1,0 +1,76 @@
+[build-system]
+requires = ["hatchling"]
+build-backend = "hatchling.build"
+
+[project]
+name = "apaar-core"
+version = "0.1.0"
+description = "APAAR-based institutional enrolment assurance platform (synthetic/mock prototype)"
+readme = "README.md"
+requires-python = ">=3.12"
+dependencies = [
+    "fastapi>=0.115.0",
+    "uvicorn[standard]>=0.30.0",
+    "pydantic>=2.9.0",
+    "pydantic-settings>=2.5.0",
+    "sqlalchemy>=2.0.36",
+    "alembic>=1.14.0",
+    "psycopg[binary,pool]>=3.2.0",
+    "python-jose[cryptography]>=3.3.0",
+    "cryptography>=43.0.0",
+    "python-multipart>=0.0.12",
+    "httpx>=0.27.0",
+    "pyyaml>=6.0.2",
+    "structlog>=24.4.0",
+    "python-dateutil>=2.9.0",
+    "uuid6>=2024.1.12",
+    "aiosqlite>=0.20.0",
+    "greenlet>=3.1.0",
+]
+
+[project.optional-dependencies]
+dev = [
+    "pytest>=8.3.0",
+    "pytest-asyncio>=0.24.0",
+    "pytest-cov>=6.0.0",
+    "ruff>=0.7.0",
+    "mypy>=1.13.0",
+    "hypothesis>=6.115.0",
+    "httpx>=0.27.0",
+    "factory-boy>=3.3.0",
+    "faker>=30.0.0",
+]
+
+[project.scripts]
+apaar-api = "apaar.main:run"
+apaar-worker = "apaar.worker.main:run"
+
+[tool.hatch.build.targets.wheel]
+packages = ["src/apaar"]
+
+[tool.ruff]
+line-length = 100
+target-version = "py312"
+src = ["src"]
+
+[tool.ruff.lint]
+select = ["E", "F", "I", "N", "UP", "S", "B", "C4", "PIE", "RET", "SIM", "TID"]
+ignore = ["S101", "S106"]
+
+[tool.mypy]
+python_version = "3.12"
+strict = true
+warn_return_any = true
+warn_unused_configs = true
+ignore_missing_imports = true
+
+[tool.pytest.ini_options]
+asyncio_mode = "strict"
+asyncio_default_fixture_loop_scope = "function"
+testpaths = ["tests"]
+addopts = "-v --tb=short"
+
+[tool.coverage.run]
+source = ["src/apaar"]
+omit = ["*/tests/*", "*/__init__.py"]
+

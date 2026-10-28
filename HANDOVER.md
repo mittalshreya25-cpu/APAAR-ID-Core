@@ -1,23 +1,41 @@
-# Handover — 28 October 2026, GitHub repository setup
+# Handover — 29 October 2026, Prototype Implementation & Verification
 
 ## State
 
-Documentation pack prepared for the user-requested GitHub repository https://github.com/mittalshreya25-cpu/APAAR-ID-Core. Remote was empty at inspection. Local main branch and repository-local identity Tushar / tushardoesstuff@gmail.com are configured. User explicitly approved uploading every file, including original exports and research evidence. Initial documentation and continuity commits were successfully pushed to origin/main on 28 October 2026. Repository-local email is tushardoesstuff@gmail.com. The final publication record is included in a follow-up commit; verify remote/local HEAD to confirm synchronization.
+Phases P1 through P6 of the APAAR-Core platform are implemented and verified. All 16 automated tests in the test suite pass cleanly (unit tests and integration flows). Live HTTP server sockets and the interactive UI dashboard have been verified end-to-end.
 
-## Read first
+## What was built and verified
 
-- [README](README.md) and [topic documentation index](docs/README.md)
-- [AGENTS.md](AGENTS.md)
-- [CONTEXT.md](CONTEXT.md) and [PHASES_AND_TASKS.md](PHASES_AND_TASKS.md)
+1. **Core Models & Database**: 21 SQLAlchemy 2.0 ORM models in `src/apaar/`; seeded `apaar_dev.db` with synthetic institutions, offerings, demo approvals, and active rule bundle.
+2. **Deterministic Mock Provider**: `MockApaarProvider` simulating match, not-found, mismatch, and unavailable scenarios with explicit `synthetic=True` provenance.
+3. **Bounded Ingestion**: CSV/JSON parser with leading-zero preservation and schema validation.
+4. **Validation Rules (VR-001–VR-014)**: Rule bundle, per-row checks, date bounds, duplicate detection, and capacity pool reconciliation.
+5. **Maker/Checker Certification**: Preparers cannot certify their own submissions (`403 SELF_APPROVAL_DENIED`). Racing certifiers on the same scope lock are rejected with `409 Conflict (CERTIFICATION_BLOCKED)`.
+6. **Cross-Institution Overlap Review**: Central temporal overlap matching across institutions with counterparty PII suppression and accountable review decision lifecycle (`OPEN` -> `RESOLVED` / `DISMISSED` -> `REOPENED`).
+7. **Cryptographic Attestations & Certificates**: JWS compact token issuance and 5-criterion verification; academic certificate records displaying both synthetic APAAR ID and local student ID.
+8. **Interactive UI Dashboard**: Served at `GET /` (`static/index.html`) with role switcher, live capacity meters, staging studio, certificate viewer, and JWS verifier.
 
-## Decisions
+## Verification evidence
 
-PROJECT_SPEC.md remains unchanged as the consolidated research baseline. Topic files are working design documents. Original exports and research evidence are retained. No application code, real student data, live registry integration or deployment was added.
+- `pytest tests/`: 16/16 PASSED in 2.3s.
+- `scripts/test_live_server.py`: All 12 live HTTP socket operations passed against uvicorn.
+- Concurrency test: `tests/integration/test_concurrency_certification.py` passed.
+- Overlap review test: `tests/integration/test_overlap_review.py` passed.
 
-## Verification and limits
+## How to run the live application
 
-Remote inspection required network-enabled Git execution because sandbox DNS failed. Document links and staged authored files passed checks before the initial commit. Initial push succeeded; final remote/local commit comparison confirms synchronization. Existing research limitations remain in the spec.
+```powershell
+# 1. Run automated test suite
+.venv\Scripts\python.exe -m pytest tests/
 
-## Next
+# 2. Run the live server
+.venv\Scripts\python.exe -m uvicorn apaar.main:app --host 127.0.0.1 --port 8000
 
-When coding is authorized, begin P1.1. UI visual work remains deferred until backend deployment/verification. Maintain context/tasks and replace this handover at meaningful boundaries.
+# 3. Access interactive UI dashboard in your browser
+http://127.0.0.1:8000/
+```
+
+## Next steps
+
+- Execute P7/P8 deployment hardening and mentor demonstration scripts.
+- Synchronize git commits to remote repository origin/main.

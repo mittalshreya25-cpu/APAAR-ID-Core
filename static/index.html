@@ -1,0 +1,709 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>APAAR ID Core — Institutional Enrolment Assurance Platform</title>
+  <!-- Tailwind CSS & Lucide Icons -->
+  <script src="https://cdn.tailwindcss.com"></script>
+  <script src="https://unpkg.com/lucide@latest"></script>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&family=JetBrains+Mono:wght@400;500;600&display=swap" rel="stylesheet">
+  <style>
+    body { font-family: 'Plus Jakarta Sans', sans-serif; }
+    code, pre, .font-mono { font-family: 'JetBrains Mono', monospace; }
+    .glass-card { background: rgba(255, 255, 255, 0.95); backdrop-filter: blur(10px); }
+  </style>
+</head>
+<body class="bg-slate-50 text-slate-800 min-h-screen flex flex-col">
+
+  <!-- Synthetic Banner -->
+  <aside aria-label="Prototype environment notice" class="bg-amber-500 text-slate-900 text-xs font-semibold px-4 py-1.5 text-center flex items-center justify-center gap-2 shadow-inner">
+    <i data-lucide="shield-alert" class="w-4 h-4"></i>
+    <span>SYNTHETIC DEMONSTRATION PROTOTYPE — All APAAR IDs and student records are fictional. No live government registry is connected.</span>
+  </aside>
+
+  <!-- Top Navigation -->
+  <header class="bg-slate-900 text-white border-b border-slate-800 sticky top-0 z-50 shadow-md">
+    <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 h-16 flex items-center justify-between">
+      <div class="flex items-center gap-3">
+        <div class="w-10 h-10 rounded-xl bg-gradient-to-tr from-indigo-500 to-emerald-400 flex items-center justify-center shadow-lg shadow-indigo-500/30">
+          <i data-lucide="layers" class="w-5 h-5 text-white"></i>
+        </div>
+        <div>
+          <span class="text-lg font-bold tracking-tight">APAAR ID <span class="text-emerald-400">Core</span></span>
+          <span class="ml-2 text-xs text-slate-400 bg-slate-800 px-2 py-0.5 rounded border border-slate-700">AICTE PS-26263</span>
+        </div>
+      </div>
+
+      <!-- Live Actor Switcher -->
+      <div class="flex items-center gap-3">
+        <div class="flex items-center gap-2 bg-slate-800/80 px-3 py-1.5 rounded-lg border border-slate-700">
+          <i data-lucide="user-check" class="w-4 h-4 text-emerald-400"></i>
+          <span class="text-xs text-slate-400">Current Role:</span>
+          <select id="roleSelector" onchange="switchRole(this.value)" class="bg-transparent text-xs font-semibold text-white focus:outline-none cursor-pointer">
+            <option value="preparer" class="bg-slate-900 text-white">Preparer (Institution 1)</option>
+            <option value="certifier" class="bg-slate-900 text-white">Certifier (Institution 1)</option>
+            <option value="regulator" class="bg-slate-900 text-white">Regulator (AICTE Analyst)</option>
+            <option value="verifier" class="bg-slate-900 text-white">External Verifier (Employer)</option>
+          </select>
+        </div>
+        <div id="connectionStatus" class="flex items-center gap-1.5 text-xs text-emerald-400 bg-emerald-950/60 border border-emerald-800/60 px-2.5 py-1 rounded-full">
+          <span class="w-2 h-2 rounded-full bg-emerald-400 animate-pulse"></span>
+          <span>API Connected</span>
+        </div>
+      </div>
+    </div>
+  </header>
+
+  <!-- Main Container -->
+  <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8 flex-1 w-full">
+    
+    <!-- Tab Nav -->
+    <div class="flex gap-2 border-b border-slate-200 mb-8 overflow-x-auto pb-2">
+      <button onclick="setTab('dashboard')" id="tab-dashboard" class="tab-btn px-4 py-2 font-semibold text-sm rounded-lg transition-all flex items-center gap-2 bg-indigo-600 text-white shadow-sm shadow-indigo-500/20">
+        <i data-lucide="layout-dashboard" class="w-4 h-4"></i> Monitoring Dashboard
+      </button>
+      <button onclick="setTab('ingestion')" id="tab-ingestion" class="tab-btn px-4 py-2 font-medium text-sm rounded-lg transition-all flex items-center gap-2 text-slate-600 hover:text-slate-900 hover:bg-slate-100">
+        <i data-lucide="upload-cloud" class="w-4 h-4"></i> Upload & Validation
+      </button>
+      <button onclick="setTab('certification')" id="tab-certification" class="tab-btn px-4 py-2 font-medium text-sm rounded-lg transition-all flex items-center gap-2 text-slate-600 hover:text-slate-900 hover:bg-slate-100">
+        <i data-lucide="stamp" class="w-4 h-4"></i> Certification (Maker/Checker)
+      </button>
+      <button onclick="setTab('certificates')" id="tab-certificates" class="tab-btn px-4 py-2 font-medium text-sm rounded-lg transition-all flex items-center gap-2 text-slate-600 hover:text-slate-900 hover:bg-slate-100">
+        <i data-lucide="award" class="w-4 h-4"></i> Verifiable Certificates
+      </button>
+      <button onclick="setTab('verifier')" id="tab-verifier" class="tab-btn px-4 py-2 font-medium text-sm rounded-lg transition-all flex items-center gap-2 text-slate-600 hover:text-slate-900 hover:bg-slate-100">
+        <i data-lucide="shield-check" class="w-4 h-4"></i> Cryptographic Verifier
+      </button>
+      <button onclick="setTab('audit')" id="tab-audit" class="tab-btn px-4 py-2 font-medium text-sm rounded-lg transition-all flex items-center gap-2 text-slate-600 hover:text-slate-900 hover:bg-slate-100">
+        <i data-lucide="clipboard-list" class="w-4 h-4"></i> Audit Trail
+      </button>
+    </div>
+
+    <!-- TAB 1: Monitoring Dashboard -->
+    <div id="content-dashboard" class="space-y-6">
+      <!-- Metric Cards -->
+      <div class="grid grid-cols-1 md:grid-cols-4 gap-5">
+        <div class="bg-white p-5 rounded-2xl border border-slate-200/80 shadow-sm flex items-center gap-4">
+          <div class="w-12 h-12 rounded-xl bg-indigo-50 text-indigo-600 flex items-center justify-center font-bold">
+            <i data-lucide="building" class="w-6 h-6"></i>
+          </div>
+          <div>
+            <p class="text-xs font-semibold uppercase tracking-wider text-slate-400">Approved Ordinary</p>
+            <h3 id="statApproved" class="text-2xl font-extrabold text-slate-900">160</h3>
+            <p class="text-[11px] text-slate-500">Across 3 offerings</p>
+          </div>
+        </div>
+
+        <div class="bg-white p-5 rounded-2xl border border-slate-200/80 shadow-sm flex items-center gap-4">
+          <div class="w-12 h-12 rounded-xl bg-blue-50 text-blue-600 flex items-center justify-center font-bold">
+            <i data-lucide="file-check" class="w-6 h-6"></i>
+          </div>
+          <div>
+            <p class="text-xs font-semibold uppercase tracking-wider text-slate-400">Reported Intake</p>
+            <h3 id="statReported" class="text-2xl font-extrabold text-slate-900">12</h3>
+            <p class="text-[11px] text-blue-600 font-medium">Under review</p>
+          </div>
+        </div>
+
+        <div class="bg-white p-5 rounded-2xl border border-slate-200/80 shadow-sm flex items-center gap-4">
+          <div class="w-12 h-12 rounded-xl bg-emerald-50 text-emerald-600 flex items-center justify-center font-bold">
+            <i data-lucide="badge-check" class="w-6 h-6"></i>
+          </div>
+          <div>
+            <p class="text-xs font-semibold uppercase tracking-wider text-slate-400">Quality Certified</p>
+            <h3 id="statCertified" class="text-2xl font-extrabold text-slate-900">10</h3>
+            <p class="text-[11px] text-emerald-600 font-medium">Snapshot Locked</p>
+          </div>
+        </div>
+
+        <div class="bg-white p-5 rounded-2xl border border-slate-200/80 shadow-sm flex items-center gap-4">
+          <div class="w-12 h-12 rounded-xl bg-amber-50 text-amber-600 flex items-center justify-center font-bold">
+            <i data-lucide="shield-check" class="w-6 h-6"></i>
+          </div>
+          <div>
+            <p class="text-xs font-semibold uppercase tracking-wider text-slate-400">Rule Pass Rate</p>
+            <h3 id="statQuality" class="text-2xl font-extrabold text-slate-900">100%</h3>
+            <p class="text-[11px] text-slate-500">14 Active Rules</p>
+          </div>
+        </div>
+      </div>
+
+      <!-- Offering Reconciliation Table -->
+      <div class="bg-white rounded-2xl border border-slate-200 shadow-sm overflow-hidden">
+        <div class="p-5 border-b border-slate-100 flex items-center justify-between">
+          <div>
+            <h2 class="font-bold text-slate-900 text-base">Programme Offerings & Capacity Reconciliation</h2>
+            <p class="text-xs text-slate-500">Committed snapshot comparison: Approved vs Reported vs Certified admissions</p>
+          </div>
+          <button onclick="refreshDashboard()" class="text-xs bg-slate-100 hover:bg-slate-200 text-slate-700 px-3 py-1.5 rounded-lg font-medium flex items-center gap-1.5 transition">
+            <i data-lucide="refresh-cw" class="w-3.5 h-3.5"></i> Refresh
+          </button>
+        </div>
+        <div class="overflow-x-auto">
+          <table class="w-full text-left text-sm">
+            <thead class="bg-slate-50 text-slate-600 text-xs font-semibold uppercase tracking-wider">
+              <tr>
+                <th class="px-5 py-3">Course / Programme</th>
+                <th class="px-5 py-3">Level</th>
+                <th class="px-5 py-3">Approved Ordinary</th>
+                <th class="px-5 py-3">Supernumerary</th>
+                <th class="px-5 py-3">Reported</th>
+                <th class="px-5 py-3">Certified</th>
+                <th class="px-5 py-3">Utilisation</th>
+              </tr>
+            </thead>
+            <tbody id="offeringsTableBody" class="divide-y divide-slate-100">
+              <!-- Loaded via JS -->
+            </tbody>
+          </table>
+        </div>
+      </div>
+    </div>
+
+    <!-- TAB 2: Ingestion & Validation -->
+    <div id="content-ingestion" class="hidden space-y-6">
+      <div class="grid grid-cols-1 md:grid-cols-3 gap-6">
+        <!-- Upload Form -->
+        <div class="bg-white p-6 rounded-2xl border border-slate-200 shadow-sm space-y-4">
+          <h2 class="font-bold text-slate-900 text-base flex items-center gap-2">
+            <i data-lucide="upload" class="w-5 h-5 text-indigo-600"></i> Stage Enrolment Batch
+          </h2>
+          <p class="text-xs text-slate-500 leading-relaxed">
+            Upload CSV or typed JSON with student rows. Bounded file limits (10MB, max 10k rows). Preserves leading zeros in APAAR and Student IDs.
+          </p>
+
+          <div class="space-y-3 text-xs">
+            <div>
+              <label for="uploadOfferingSelect" class="font-semibold text-slate-700 block mb-1">Target Programme Offering:</label>
+              <select id="uploadOfferingSelect" class="w-full border border-slate-300 rounded-lg p-2 bg-slate-50 font-medium">
+                <!-- Offerings populated via JS -->
+              </select>
+            </div>
+            <div>
+              <label for="cohortInput" class="font-semibold text-slate-700 block mb-1">Admission Cohort:</label>
+              <input id="cohortInput" type="text" value="2024-25" class="w-full border border-slate-300 rounded-lg p-2 bg-slate-50 font-mono">
+            </div>
+            <div>
+              <label for="quickFillBtn" class="font-semibold text-slate-700 block mb-1">Demo CSV Fixture:</label>
+              <button id="quickFillBtn" onclick="quickFillCsv()" class="w-full bg-slate-100 hover:bg-slate-200 text-slate-700 font-semibold py-2 rounded-lg transition text-xs border border-slate-200">
+                Load 2 Synthetic Students (1 Ordinary + 1 Supernumerary)
+              </button>
+            </div>
+          </div>
+
+          <button onclick="submitBatch()" id="btnSubmitBatch" class="w-full bg-indigo-600 hover:bg-indigo-700 text-white font-semibold py-2.5 rounded-xl transition shadow-md shadow-indigo-600/20 text-xs flex items-center justify-center gap-2">
+            <i data-lucide="send" class="w-4 h-4"></i> Upload & Stage Submission
+          </button>
+        </div>
+
+        <!-- Validation Execution Panel -->
+        <div class="md:col-span-2 bg-white p-6 rounded-2xl border border-slate-200 shadow-sm space-y-4">
+          <div class="flex items-center justify-between">
+            <h2 class="font-bold text-slate-900 text-base flex items-center gap-2">
+              <i data-lucide="shield-check" class="w-5 h-5 text-emerald-600"></i> Validation & Rule Execution
+            </h2>
+            <span id="activeSubmissionBadge" class="text-xs px-2.5 py-1 rounded-full bg-slate-100 text-slate-600 font-medium">No Active Submission</span>
+          </div>
+
+          <div id="validationResultBox" class="p-4 rounded-xl bg-slate-50 border border-slate-200 text-xs space-y-2">
+            <p class="text-slate-500 italic">Stage a submission to trigger rule evaluation (VR-001 through VR-014).</p>
+          </div>
+
+          <!-- Findings List -->
+          <div>
+            <h4 class="text-xs font-bold uppercase text-slate-500 mb-2">Rule Evaluation Findings</h4>
+            <div id="findingsList" class="space-y-2 max-h-64 overflow-y-auto pr-1">
+              <p class="text-xs text-slate-400 italic">No findings recorded yet.</p>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- TAB 3: Certification (Maker/Checker) -->
+    <div id="content-certification" class="hidden space-y-6">
+      <div class="bg-white p-6 rounded-2xl border border-slate-200 shadow-sm max-w-2xl mx-auto space-y-5">
+        <div class="border-b border-slate-100 pb-4">
+          <h2 class="font-bold text-slate-900 text-lg flex items-center gap-2">
+            <i data-lucide="stamp" class="w-6 h-6 text-emerald-600"></i> Maker / Checker Quality Certification
+          </h2>
+          <p class="text-xs text-slate-500 mt-1">
+            Requirement R8 separation of duties: The subject who created the submission (Maker) CANNOT certify it. A distinct authorized Certifier must approve.
+          </p>
+        </div>
+
+        <div class="bg-slate-50 p-4 rounded-xl border border-slate-200 text-xs space-y-2">
+          <div class="flex justify-between">
+            <span class="text-slate-500">Submission ID:</span>
+            <span id="certSubId" class="font-mono font-medium text-slate-800">None</span>
+          </div>
+          <div class="flex justify-between">
+            <span class="text-slate-500">Current Status:</span>
+            <span id="certSubStatus" class="font-semibold text-amber-600">Awaiting Staging</span>
+          </div>
+          <div class="flex justify-between">
+            <span class="text-slate-500">Created By (Maker):</span>
+            <span id="certMaker" class="font-mono text-slate-700">-</span>
+          </div>
+          <div class="flex justify-between">
+            <span class="text-slate-500">Your Current Subject:</span>
+            <span id="certCurrentSubject" class="font-mono text-slate-700">preparer-inst1@demo.synthetic</span>
+          </div>
+        </div>
+
+        <!-- Action Button -->
+        <div class="space-y-2">
+          <button onclick="attemptCertification()" class="w-full bg-emerald-600 hover:bg-emerald-700 text-white font-semibold py-3 rounded-xl transition shadow-md shadow-emerald-600/20 text-sm flex items-center justify-center gap-2">
+            <i data-lucide="check-circle" class="w-4 h-4"></i> Certify Enrolment Snapshot
+          </button>
+          <p class="text-[11px] text-slate-400 text-center">
+            Tip: Attempt certifying while in the "Preparer" role to verify the <span class="text-red-500 font-mono">SELF_APPROVAL_DENIED</span> constraint!
+          </p>
+        </div>
+
+        <div id="certificationFeedback" class="hidden p-4 rounded-xl text-xs"></div>
+      </div>
+    </div>
+
+    <!-- TAB 4: Verifiable Certificates -->
+    <div id="content-certificates" class="hidden space-y-6">
+      <div class="max-w-2xl mx-auto">
+        <!-- High-fidelity Academic Certificate Card -->
+        <div class="bg-white rounded-3xl border-2 border-slate-300 shadow-xl overflow-hidden relative">
+          <!-- Decorative Certificate Header -->
+          <div class="bg-gradient-to-r from-slate-900 via-indigo-950 to-slate-900 p-8 text-center text-white relative">
+            <div class="w-16 h-16 mx-auto rounded-2xl bg-amber-400/20 border border-amber-300/40 flex items-center justify-center mb-3">
+              <i data-lucide="award" class="w-8 h-8 text-amber-400"></i>
+            </div>
+            <h2 class="text-xl font-extrabold tracking-wide uppercase text-amber-300">Demo Engineering College (Synthetic)</h2>
+            <p class="text-xs text-slate-300 mt-1">Autonomous Institution Approved by AICTE (Prototype Record)</p>
+            <div class="absolute top-4 right-4 bg-amber-400/20 border border-amber-300/40 text-amber-300 text-[10px] px-2.5 py-0.5 rounded-full font-bold uppercase">
+              Verifiable Enrolment
+            </div>
+          </div>
+
+          <!-- Body -->
+          <div class="p-8 space-y-6 text-center">
+            <p class="text-xs uppercase tracking-widest text-slate-400 font-semibold">Institutional Student Enrolment Certificate</p>
+            <h3 class="text-2xl font-bold text-slate-900">Synthetic Student 0001</h3>
+            <p class="text-sm text-slate-600 max-w-md mx-auto">
+              has been duly enrolled in the <span class="font-semibold text-slate-900">B.Tech Computer Science (Synthetic)</span> programme for the academic cohort <span class="font-semibold text-slate-900">2024-25</span>.
+            </p>
+
+            <!-- Dual Identifiers Display (Requirement R10) -->
+            <div class="bg-slate-50 border border-slate-200 rounded-2xl p-4 grid grid-cols-2 gap-4 max-w-lg mx-auto">
+              <div class="border-r border-slate-200 pr-2">
+                <span class="text-[11px] font-semibold text-slate-400 uppercase tracking-wider block">APAAR ID</span>
+                <span class="text-lg font-bold font-mono text-indigo-600 tracking-wider">1234 5678 9012</span>
+                <span class="text-[10px] text-slate-400 block mt-0.5">Synthetic 12-digit token</span>
+              </div>
+              <div class="pl-2">
+                <span class="text-[11px] font-semibold text-slate-400 uppercase tracking-wider block">Local Student ID</span>
+                <span class="text-lg font-bold font-mono text-slate-800">DEMO-2024-0001</span>
+                <span class="text-[10px] text-slate-400 block mt-0.5">Institutional identifier</span>
+              </div>
+            </div>
+
+            <!-- Opaque QR Reference Badge -->
+            <div class="flex items-center justify-between bg-slate-900 text-white rounded-xl p-4 text-left">
+              <div class="flex items-center gap-3">
+                <div class="w-12 h-12 bg-white rounded-lg p-1.5 flex items-center justify-center">
+                  <i data-lucide="qr-code" class="w-8 h-8 text-slate-900"></i>
+                </div>
+                <div>
+                  <span class="text-xs font-bold block text-emerald-400">Cryptographically Verifiable</span>
+                  <span class="text-[11px] text-slate-400 font-mono">Reference: /api/v1/attestations/certificates/0001</span>
+                </div>
+              </div>
+              <button onclick="setTab('verifier')" class="text-xs bg-emerald-500 hover:bg-emerald-600 text-slate-950 font-bold px-3 py-2 rounded-lg transition">
+                Verify Now
+              </button>
+            </div>
+          </div>
+
+          <!-- Synthetic Provenance Disclaimer Footer -->
+          <div class="bg-slate-100 border-t border-slate-200 px-6 py-3 text-center text-[11px] text-slate-500">
+            Prov: SYNTHETIC_MOCK_PROVENANCE — Generated for AICTE PS-26263 Demonstration. Not an official national credential.
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- TAB 5: Cryptographic Verifier -->
+    <div id="content-verifier" class="hidden space-y-6">
+      <div class="max-w-2xl mx-auto bg-white p-6 rounded-2xl border border-slate-200 shadow-sm space-y-5">
+        <div>
+          <h2 class="font-bold text-slate-900 text-lg flex items-center gap-2">
+            <i data-lucide="shield-check" class="w-6 h-6 text-indigo-600"></i> Signed Record Verifier
+          </h2>
+          <p class="text-xs text-slate-500 mt-1">
+            Validates JWS compact tokens: decomposes signature validity, issuer trust, time bounds, and active revocation status.
+          </p>
+        </div>
+
+        <div class="space-y-3">
+          <label for="attestationTokenInput" class="text-xs font-semibold text-slate-700 block">JWS Attestation Token:</label>
+          <textarea id="attestationTokenInput" rows="4" class="w-full border border-slate-300 rounded-xl p-3 text-xs font-mono bg-slate-50 text-slate-700 focus:outline-none focus:ring-2 focus:ring-indigo-500" placeholder="eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9..."></textarea>
+          <div class="flex gap-2">
+            <button onclick="generateFreshToken()" class="text-xs bg-slate-100 hover:bg-slate-200 text-slate-700 font-semibold px-3 py-2 rounded-lg transition border border-slate-200">
+              Generate Fresh Attestation
+            </button>
+            <button onclick="verifyToken()" class="text-xs bg-indigo-600 hover:bg-indigo-700 text-white font-semibold px-4 py-2 rounded-lg transition shadow-md shadow-indigo-600/20 flex-1">
+              Verify Token Authenticity
+            </button>
+          </div>
+        </div>
+
+        <!-- Verification Results Checklist -->
+        <div id="verifierResultsBox" class="hidden border border-slate-200 rounded-xl p-4 bg-slate-50 space-y-3">
+          <h4 class="text-xs font-bold uppercase text-slate-600">Verification Inspection</h4>
+          <div class="grid grid-cols-2 gap-2 text-xs">
+            <div id="checkStructure" class="p-2.5 rounded-lg bg-white border border-slate-200 flex items-center gap-2">
+              <i data-lucide="check-circle" class="w-4 h-4 text-emerald-500"></i>
+              <span>Structure Valid</span>
+            </div>
+            <div id="checkSignature" class="p-2.5 rounded-lg bg-white border border-slate-200 flex items-center gap-2">
+              <i data-lucide="check-circle" class="w-4 h-4 text-emerald-500"></i>
+              <span>Signature Valid</span>
+            </div>
+            <div id="checkIssuer" class="p-2.5 rounded-lg bg-white border border-slate-200 flex items-center gap-2">
+              <i data-lucide="check-circle" class="w-4 h-4 text-emerald-500"></i>
+              <span>Trusted Issuer</span>
+            </div>
+            <div id="checkStatus" class="p-2.5 rounded-lg bg-white border border-slate-200 flex items-center gap-2">
+              <i data-lucide="check-circle" class="w-4 h-4 text-emerald-500"></i>
+              <span>Status: ACTIVE</span>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- TAB 6: Audit Trail -->
+    <div id="content-audit" class="hidden space-y-6">
+      <div class="bg-white rounded-2xl border border-slate-200 shadow-sm overflow-hidden">
+        <div class="p-5 border-b border-slate-100 flex items-center justify-between">
+          <div>
+            <h2 class="font-bold text-slate-900 text-base">Immutable Audit Event Ledger</h2>
+            <p class="text-xs text-slate-500">Append-only action audit logs. Sensitive student identifiers are never written to log entries.</p>
+          </div>
+          <button onclick="refreshAudit()" class="text-xs bg-slate-100 hover:bg-slate-200 text-slate-700 px-3 py-1.5 rounded-lg font-medium flex items-center gap-1.5 transition">
+            <i data-lucide="refresh-cw" class="w-3.5 h-3.5"></i> Refresh Logs
+          </button>
+        </div>
+        <div class="overflow-x-auto">
+          <table class="w-full text-left text-xs">
+            <thead class="bg-slate-50 text-slate-600 font-semibold uppercase tracking-wider">
+              <tr>
+                <th class="px-5 py-3">Timestamp</th>
+                <th class="px-5 py-3">Principal</th>
+                <th class="px-5 py-3">Action</th>
+                <th class="px-5 py-3">Object</th>
+                <th class="px-5 py-3">Outcome</th>
+                <th class="px-5 py-3">Purpose</th>
+              </tr>
+            </thead>
+            <tbody id="auditTableBody" class="divide-y divide-slate-100 font-mono">
+              <!-- Loaded via JS -->
+            </tbody>
+          </table>
+        </div>
+      </div>
+    </div>
+
+  </div>
+
+  <footer class="bg-slate-900 text-slate-400 text-xs py-6 border-t border-slate-800 text-center">
+    <p>APAAR ID Core — AICTE Problem Statement 26263 Demonstration Blueprint</p>
+    <p class="text-slate-500 mt-1">Python 3.12 • FastAPI • PostgreSQL / SQLite Architecture • Synthetic / Mock Verification Only</p>
+  </footer>
+
+  <!-- App Script -->
+  <script>
+    let currentRole = "preparer";
+    let currentToken = "";
+    let activeSubmissionId = null;
+    let selectedOfferingId = null;
+    let institutionId = null;
+
+    const ROLES = {
+      preparer: { subject: "preparer-inst1@demo.synthetic", roles: ["PREPARER"], code: "DEMO-INST-001" },
+      certifier: { subject: "certifier-inst1@demo.synthetic", roles: ["CERTIFIER"], code: "DEMO-INST-001" },
+      regulator: { subject: "regulator@demo.synthetic", roles: ["REGULATOR"], code: null },
+      verifier: { subject: "verifier@demo.synthetic", roles: ["VERIFIER"], code: null },
+    };
+
+    async function init() {
+      lucide.createIcons();
+      await switchRole("preparer");
+      await loadOfferings();
+      await refreshDashboard();
+    }
+
+    async function switchRole(roleKey) {
+      currentRole = roleKey;
+      const roleConfig = ROLES[roleKey];
+      try {
+        const res = await fetch("/api/v1/access/dev-token", {
+          method: "POST",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify({
+            subject: roleConfig.subject,
+            roles: roleConfig.roles,
+            institution_code: roleConfig.code,
+            institution_id: institutionId
+          })
+        });
+        const data = await res.json();
+        currentToken = data.access_token;
+        document.getElementById("certCurrentSubject").innerText = roleConfig.subject;
+      } catch (err) {
+        console.error("Auth error:", err);
+      }
+    }
+
+    function setTab(tabName) {
+      const tabs = ['dashboard', 'ingestion', 'certification', 'certificates', 'verifier', 'audit'];
+      tabs.forEach(t => {
+        const btn = document.getElementById(`tab-${t}`);
+        const content = document.getElementById(`content-${t}`);
+        if (t === tabName) {
+          btn.className = "tab-btn px-4 py-2 font-semibold text-sm rounded-lg transition-all flex items-center gap-2 bg-indigo-600 text-white shadow-sm shadow-indigo-500/20";
+          content.classList.remove("hidden");
+        } else {
+          btn.className = "tab-btn px-4 py-2 font-medium text-sm rounded-lg transition-all flex items-center gap-2 text-slate-600 hover:text-slate-900 hover:bg-slate-100";
+          content.classList.add("hidden");
+        }
+      });
+      lucide.createIcons();
+    }
+
+    async function loadOfferings() {
+      try {
+        const res = await fetch("/api/v1/approvals/offerings", {
+          headers: { "Authorization": `Bearer ${currentToken}` }
+        });
+        const offerings = await res.json();
+        if (offerings.length > 0) {
+          selectedOfferingId = offerings[0].id;
+          institutionId = offerings[0].institution_id;
+          const selectEl = document.getElementById("uploadOfferingSelect");
+          selectEl.innerHTML = offerings.map(o => `<option value="${o.id}">${o.course_name} (${o.level})</option>`).join("");
+        }
+      } catch (err) {
+        console.error("Load offerings error:", err);
+      }
+    }
+
+    async function refreshDashboard() {
+      try {
+        const res = await fetch("/api/v1/reporting/intake", {
+          headers: { "Authorization": `Bearer ${currentToken}` }
+        });
+        const data = await res.json();
+        document.getElementById("statApproved").innerText = data.total_approved_ordinary;
+        document.getElementById("statReported").innerText = data.total_reported;
+        document.getElementById("statCertified").innerText = data.total_certified;
+
+        const tbody = document.getElementById("offeringsTableBody");
+        tbody.innerHTML = data.offerings.map(o => `
+          <tr class="hover:bg-slate-50 transition">
+            <td class="px-5 py-3 font-semibold text-slate-900">${o.course_name}</td>
+            <td class="px-5 py-3 text-slate-500 font-mono text-xs">${o.level}</td>
+            <td class="px-5 py-3 font-medium text-slate-700">${o.approved_ordinary}</td>
+            <td class="px-5 py-3 font-medium text-slate-700">${o.approved_supernumerary}</td>
+            <td class="px-5 py-3 font-medium text-blue-600">${o.reported_population}</td>
+            <td class="px-5 py-3 font-semibold text-emerald-600">${o.certified_population}</td>
+            <td class="px-5 py-3">
+              <span class="inline-flex items-center px-2 py-0.5 rounded text-xs font-semibold ${o.utilization_percent > 100 ? 'bg-red-100 text-red-700' : 'bg-emerald-100 text-emerald-700'}">
+                ${o.utilization_percent}%
+              </span>
+            </td>
+          </tr>
+        `).join("");
+      } catch (err) {
+        console.error("Dashboard refresh error:", err);
+      }
+    }
+
+    function quickFillCsv() {
+      alert("Synthetic 2-Student Demo CSV loaded into staging memory.");
+    }
+
+    async function submitBatch() {
+      const btn = document.getElementById("btnSubmitBatch");
+      btn.innerText = "Staging batch...";
+      try {
+        const csvContent = (
+          "local_student_id,apaar_id,entry_route,category,is_nri,is_oci,is_fn,admission_cohort,current_study_year,interval_start\n" +
+          "DEMO-2024-0001,123456789012,DIRECT,GENERAL,false,false,false,2024-25,1,2024-08-01\n" +
+          "DEMO-2024-0002,234567890123,DIRECT,SUPERNUMERARY,false,false,true,2024-25,1,2024-08-01\n"
+        );
+        const blob = new Blob([csvContent], { type: "text/csv" });
+        const formData = new FormData();
+        formData.append("programme_offering_id", selectedOfferingId);
+        formData.append("admission_cohort", "2024-25");
+        formData.append("file", blob, "demo_batch.csv");
+
+        const res = await fetch("/api/v1/submissions", {
+          method: "POST",
+          headers: { "Authorization": `Bearer ${currentToken}` },
+          body: formData
+        });
+        const sub = await res.json();
+        activeSubmissionId = sub.id;
+
+        document.getElementById("activeSubmissionBadge").innerText = `Active: ${sub.id.slice(0, 8)}... (${sub.status})`;
+        document.getElementById("certSubId").innerText = sub.id;
+        document.getElementById("certSubStatus").innerText = sub.status;
+        document.getElementById("certMaker").innerText = sub.created_by;
+
+        // Auto trigger validation
+        const valRes = await fetch(`/api/v1/validation/submissions/${activeSubmissionId}/validate`, {
+          method: "POST",
+          headers: { "Authorization": `Bearer ${currentToken}` }
+        });
+        const valData = await valRes.json();
+
+        document.getElementById("validationResultBox").innerHTML = `
+          <div class="flex items-center justify-between font-bold text-emerald-700">
+            <span>Validation Completed</span>
+            <span>Total Findings: ${valData.total_findings} (${valData.blocking_findings} Blocking)</span>
+          </div>
+          <p class="text-slate-600">Submission status transitioned to: <strong class="text-slate-900">READY_FOR_CERTIFICATION</strong></p>
+        `;
+        document.getElementById("certSubStatus").innerText = "READY_FOR_CERTIFICATION";
+
+        // Fetch findings
+        const findingsRes = await fetch(`/api/v1/validation/runs/${valData.id}/findings`, {
+          headers: { "Authorization": `Bearer ${currentToken}` }
+        });
+        const findings = await findingsRes.json();
+        document.getElementById("findingsList").innerHTML = findings.map(f => `
+          <div class="p-2.5 rounded-lg border text-xs flex items-center justify-between ${f.outcome === 'PASS' ? 'bg-emerald-50 border-emerald-200 text-emerald-800' : 'bg-amber-50 border-amber-200 text-amber-800'}">
+            <span class="font-mono font-bold">${f.rule_id}</span>
+            <span>${f.expected_condition || 'Format check'}</span>
+            <span class="font-bold">${f.outcome}</span>
+          </div>
+        `).join("");
+
+        btn.innerText = "Staged & Validated!";
+      } catch (err) {
+        console.error("Submit batch error:", err);
+        btn.innerText = "Upload & Stage Submission";
+      }
+    }
+
+    async function attemptCertification() {
+      const fb = document.getElementById("certificationFeedback");
+      fb.classList.remove("hidden");
+      if (!activeSubmissionId) {
+        fb.className = "p-4 rounded-xl text-xs bg-red-50 text-red-700 border border-red-200";
+        fb.innerText = "Please stage a submission first in the 'Upload & Validation' tab!";
+        return;
+      }
+
+      try {
+        const res = await fetch(`/api/v1/validation/submissions/${activeSubmissionId}/certify`, {
+          method: "POST",
+          headers: { "Authorization": `Bearer ${currentToken}` }
+        });
+        const data = await res.json();
+
+        if (res.status === 403) {
+          fb.className = "p-4 rounded-xl text-xs bg-red-50 text-red-700 border border-red-200 space-y-1";
+          fb.innerHTML = `
+            <strong class="font-bold block">❌ Certification Rejected: Maker/Checker Rule Violation</strong>
+            <p>${data.detail.message}</p>
+            <p class="text-[11px] text-red-500 font-mono mt-1">Error code: ${data.detail.error_code}</p>
+          `;
+        } else if (res.status === 200) {
+          fb.className = "p-4 rounded-xl text-xs bg-emerald-50 text-emerald-700 border border-emerald-200 space-y-1";
+          fb.innerHTML = `
+            <strong class="font-bold block">✅ Certification Succeeded!</strong>
+            <p>Snapshot version ${data.certified_version} locked and committed by ${data.certified_by}.</p>
+          `;
+          document.getElementById("certSubStatus").innerText = "CERTIFIED";
+          await refreshDashboard();
+        } else {
+          fb.className = "p-4 rounded-xl text-xs bg-amber-50 text-amber-700 border border-amber-200";
+          fb.innerText = data.detail ? data.detail.message : JSON.stringify(data);
+        }
+      } catch (err) {
+        console.error("Certification attempt error:", err);
+      }
+    }
+
+    async function generateFreshToken() {
+      try {
+        const res = await fetch("/api/v1/attestations/issue", {
+          method: "POST",
+          headers: {
+            "Authorization": `Bearer ${currentToken}`,
+            "Content-Type": "application/json"
+          },
+          body: JSON.stringify({
+            record_type: "ENROLMENT_ATTESTATION",
+            purpose: "EMPLOYMENT_VERIFICATION",
+            expires_in_days: 30
+          })
+        });
+        const data = await res.json();
+        document.getElementById("attestationTokenInput").value = data.signed_bytes;
+      } catch (err) {
+        console.error("Generate token error:", err);
+      }
+    }
+
+    async function verifyToken() {
+      const token = document.getElementById("attestationTokenInput").value.trim();
+      if (!token) return;
+
+      try {
+        const res = await fetch("/api/v1/attestations/verify", {
+          method: "POST",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify({ signed_bytes: token })
+        });
+        const v = await res.json();
+        const box = document.getElementById("verifierResultsBox");
+        box.classList.remove("hidden");
+
+        document.getElementById("checkStructure").className = `p-2.5 rounded-lg bg-white border flex items-center gap-2 ${v.structure_valid ? 'border-emerald-300 text-emerald-700' : 'border-red-300 text-red-700'}`;
+        document.getElementById("checkSignature").className = `p-2.5 rounded-lg bg-white border flex items-center gap-2 ${v.signature_valid ? 'border-emerald-300 text-emerald-700' : 'border-red-300 text-red-700'}`;
+        document.getElementById("checkIssuer").className = `p-2.5 rounded-lg bg-white border flex items-center gap-2 ${v.issuer_trusted ? 'border-emerald-300 text-emerald-700' : 'border-red-300 text-red-700'}`;
+        document.getElementById("checkStatus").className = `p-2.5 rounded-lg bg-white border flex items-center gap-2 ${v.is_valid ? 'border-emerald-300 text-emerald-700' : 'border-red-300 text-red-700'}`;
+        document.getElementById("checkStatus").innerHTML = `<span>Status: ${v.status}</span>`;
+      } catch (err) {
+        console.error("Verify token error:", err);
+      }
+    }
+
+    async function refreshAudit() {
+      try {
+        const res = await fetch("/api/v1/audit", {
+          headers: { "Authorization": `Bearer ${currentToken}` }
+        });
+        const audits = await res.json();
+        const tbody = document.getElementById("auditTableBody");
+        tbody.innerHTML = audits.map(a => `
+          <tr class="hover:bg-slate-50 transition">
+            <td class="px-5 py-2.5 text-slate-500">${a.timestamp.slice(0, 19)}</td>
+            <td class="px-5 py-2.5 text-slate-700">${a.principal}</td>
+            <td class="px-5 py-2.5 font-bold text-indigo-600">${a.action}</td>
+            <td class="px-5 py-2.5 text-slate-600">${a.object_type}</td>
+            <td class="px-5 py-2.5 text-emerald-600 font-semibold">${a.outcome}</td>
+            <td class="px-5 py-2.5 text-slate-500">${a.purpose || '-'}</td>
+          </tr>
+        `).join("");
+      } catch (err) {
+        console.error("Audit refresh error:", err);
+      }
+    }
+
+    window.addEventListener("DOMContentLoaded", init);
+  </script>
+</body>
+</html>
